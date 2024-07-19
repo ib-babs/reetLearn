@@ -1,0 +1,88 @@
+{% include "layout.html" %} {% block content %}
+<link rel="stylesheet" href="../static/styles/lesson-page.css" />
+
+<main>
+  {%if g.course%}
+  <div class="course-desc">
+    <img src="{{g.course.course_image}}" alt="course-image" loading="lazy" />
+    <div>
+      <p style="font-size: 2em; margin-block: 0; font-weight: bold">
+        {{g.course.course_name}}
+      </p>
+      <p style="margin-bottom: 0; color: grey">{{g.course.description}}</p>
+    </div>
+  </div>
+
+  {% if g.lessons %} {% for lesson in g.lessons %}
+  <div class="lesson-container">
+    <nav class="lesson-options">
+      <a
+        class="option-link"
+        href="{{url_for('edit_lesson', course_name=g.course.course_name, lesson_id=lesson.id)}}"
+        >Edit</a
+      >
+      <a
+        class="option-link delete-lesson-link"
+        href="{{url_for('delete_lesson', course_name=g.course.course_name, lesson_id=lesson.id)}}"
+        >Delete</a
+      >
+    </nav>
+    <i class="fa fa-ellipsis-v"></i>
+    <div class="lesson-cards" style="font-size: 1.5em; cursor: pointer">
+      <div class="lesson-list">
+        <i class="fa fa-tasks" style="color: var(--btn)"></i>
+        <div>
+          <small style="color: grey; font-size: 11px"
+            >Lesson {{lesson.lesson_number}}</small
+          >
+          <p class="lesson">{{lesson.lesson}}</p>
+        </div>
+      </div>
+      <p hidden class="lesson-detail">{{lesson.lesson_detail}}</p>
+    </div>
+  </div>
+
+  <div class="lesson-div" hidden>
+    <div class="inner-lesson-div">
+      <i class="fa fa-arrow-left hide-lesson-div" style="font-size: 1.2em"></i>
+      <h2></h2>
+      <p class="lesson-detail-paragraph"></p>
+    </div>
+  </div>
+  {% endfor %} {% endif %}
+
+  <script async>
+    window.addEventListener("load", () => {
+      $(".delete-lesson-link").click(function (e) {
+        confirm("Are your sure about deleting this lesson?")
+          ? true
+          : e.preventDefault();
+      });
+
+      $(".hide-lesson-div").click(() => {
+        $(".lesson-div").css("display", "none");
+      });
+
+      $.each($(".lesson-cards"), (idx, card) => {
+        $(card).click(() => {
+          $(".lesson-div h2").text(
+            $(card)
+              .children(".lesson-list")
+              .children("div")
+              .children(".lesson")
+              .text()
+          );
+          $(".lesson-div p").text($(card).children(".lesson-detail").text());
+          $(".lesson-div").css("display", "block");
+        });
+      });
+
+      $.each($(".fa-ellipsis-v"), (idx, val) => {
+        $(val).click(() => {
+          $($(".lesson-options")[idx]).toggle(400);
+        });
+      });
+    });
+  </script>
+</main>
+{%endif%} {% endblock content %} {% include "footer.html" %}

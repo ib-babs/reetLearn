@@ -1,0 +1,260 @@
+.profile-modal{
+  min-height: 100vh
+}
+.profile-inner-modal p {
+  margin: 0;
+}
+.profile-inner-modal {
+  display: flex;
+  user-select: none;
+}
+.sidebar,
+.aside-detail {
+  padding: 25px;
+}
+.countries-container{
+  position: relative;
+}
+#country button{
+  background-color: transparent;
+  padding: 10px;
+  padding-inline: 20px;
+  text-align: start;
+  width: 100%;
+}
+#country-name{
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px #ccc solid;
+  padding-inline: 20px;
+  margin-bottom: 10px;
+
+}
+#country{
+  height: 300px;
+  overflow-y: scroll;
+  position: absolute;
+  top: 230px;
+  border: 1px solid var(--btn);
+  background-color: white;
+}
+.header{
+  position: unset;
+}
+.sidebar {
+  border-right: #ccc solid 1px;
+}
+.sidebar li {
+  color: grey;
+  padding-block-end: 10px;
+}
+.sidebar li:first-child {
+  padding-block-end: 15px;
+}
+
+
+.sidebar ul {
+  margin: 0;
+  padding: 0;
+}
+.chevron {
+  font-weight: bolder;
+  font-size: 1.8em;
+  color: grey;
+}
+#edit-profile-para {
+  color: black;
+}
+#information-detail form {
+  display: flex;
+  flex-direction: column;
+}
+
+form div textarea {
+  resize: none;
+}
+
+input,
+form div textarea {
+  width: 92%;
+  margin-bottom: 10px;
+  padding: 8px;
+  padding-inline: 15px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #ccc;
+}
+input:focus,
+#username:focus,
+#email:focus,
+textarea:focus, #country-name:hover {
+  outline: 1px solid var(--btn);
+}
+
+ #country .country-name-btn:hover{
+  color: white;
+  background-color: #31b3b9;
+} 
+
+#information-detail #submit-btn,
+#upload-image-label,
+#delete-account-detail button, #password-detail button {
+  padding-block: 10px;
+  padding-inline: 30px;
+  margin-block: 8px;
+  color: white;
+  border-radius: 5px;
+}
+
+#upload-image-label {
+  padding-block: 5px;
+  background-color: var(--btn);
+  margin-block: 0;
+  text-align: center;
+}
+#information-detail #info-user-img-card {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-block: 20px;
+
+}
+#information-detail #info-user-img-card div {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
+
+#password-detail form div input {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
+}
+#password-detail form div {
+  display: flex;
+  align-items: baseline;
+  margin-top: 4px;
+}
+
+#password-detail form div small {
+  color: grey;
+  border: 1px #ccc solid;
+  border-radius: 5px;
+  padding: 8px;
+  padding-inline: 8px;
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
+  border-left: none;
+}
+
+#delete-account-detail ul li {
+  padding-block: 5px;
+  color: grey;
+}
+#delete-account-detail ul li:last-child {
+  color: black;
+}
+#delete-account-detail ul {
+  padding-inline-start: 35px;
+  list-style: initial;
+}
+
+.aside-header {
+  font-weight: bold;
+}
+
+@media screen and (320px <= width < 620px) {
+  .profile-inner-modal {
+    flex-direction: column;
+    border-radius: 0;
+    
+  }
+  .sidebar {
+    padding: 0;
+    width: 100%;
+  }
+  .sidebar li,
+  .aside-header {
+    border-top: #ccc 1px solid;
+    border-right: 0;
+    color: black;
+    padding-inline: 30px;
+    padding-block: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .aside-header {
+    border-top: 0;
+    border-bottom: 1px #ccc solid;
+    padding-block: 20px;
+    background: #5552;
+  }
+  .aside-detail form,
+  .aside-detail #delete-account-detail div {
+    padding-inline: 20px;
+  }
+
+  .aside-detail {
+    padding: 0;
+  }
+  .sidebar li:last-child {
+    border-bottom: #ccc 1px solid;
+  }
+  .sidebar li:first-child {
+    background: #5552;
+    color: grey;
+    border-top: 0;
+    justify-content: start;
+    padding-block: 20px;
+    gap: 30%;
+  }
+}
+
+
+@media screen and (width >= 620px) {
+  .chevron {
+    display: none;
+  }
+  .aside-detail {
+    flex-grow: 1;
+  }
+  
+
+  .profile-modal{
+    padding-block: 10px;
+    display: grid;
+    place-items: center;
+    
+  }
+  .profile-inner-modal{
+    border-radius: 5px;
+    background-color: var(--bg);
+    width: 600px;
+    height: 100%;
+  }
+  .detail-style {
+    display: block;
+  }
+  #account-deletion-li {
+    width: max-content;
+  }
+  .aside-profile-item p {
+    color: black;
+  }
+  .aside-profile-item {
+    font-weight: bold;
+  }
+  .sidebar{
+    padding-inline-end: 65px;
+  }
+}
+@media screen and (width >= 1024px) {
+  .profile-inner-modal{
+    background-color: var(--bg);
+    width: 750px;
+    height: 100%;
+  }
+  #country-name{
+    width: 90%;
+  }
+}

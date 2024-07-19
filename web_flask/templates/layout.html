@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReetLearn</title>
+    <script
+      src="{{url_for('static', filename='scripts/jquery-3.7.1.min.js')}}"
+      async
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='styles/fontawesome-free-6.5.1-web/css/all.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='styles/flag-icons-main/css/flag-icons.min.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='styles/layout.css')}}"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{url_for('static', filename='images/logo.png')}}"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="nav-brand">
+        <img
+          src="{{url_for('static', filename='images/logo.png')}}"
+          alt="reet-learn-logo"
+          loading="lazy"
+        />
+        <h1>reetlearn</h1>
+      </div>
+      <div class="mobile-navbar">
+        <span>Menu</span> <i class="fas fa-bars" id="collapse-menu"></i>
+      </div>
+      <nav class="desktop-navbar">
+        <ul id="parent-ul">
+          {% if g.user_id %}
+          <li class="auth-li">
+            <a href="{{url_for('course_page')}}"> Course </a>
+          </li>
+          {% if g.user_info.role == 'admin' %}
+          <li class="auth-li">
+            <a href="{{url_for('create_course')}}">Add new course </a>
+          </li>
+          <li class="auth-li">
+            <a href="{{url_for('add_lesson')}}">Add lesson</a>
+          </li>
+          {% endif %}
+          <li class="auth-li">
+            <a href="{{url_for('profile', user_id=g.user_id)}}"> Profile </a>
+          </li>
+          <li id="user-account-nav-item" class="auth-li">
+            <div>
+              <i class="fa fa-user-circle"></i>
+              <span id="user-name-nav"><b>{{g.user_info.username}}</b></span>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+          </li>
+          <li style="display: flex; text-align: center" class="auth-li">
+            <a
+              href="{{url_for('logout')}}"
+              style="border: var(--btn) 1px solid; padding: 9px"
+              id="logout-link"
+              >Logout</a
+            >
+          </li>
+          {% endif %} {% if not g.user_id %}
+          <li id="child-ul">
+            <a class="login-btn" href="{{url_for('sign_in')}}">Log in</a>
+            <a
+              class="register-btn"
+              href="{{url_for('sign_up')}}"
+              style="color: white"
+              >Register</a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      <div class="profile-nav-menu">
+        <ul style="padding: 0">
+          <li style="color: grey" id="goto-desktop-navbar">
+            <b><i class="fas fa-chevron-left"></i> <span>Back</span></b>
+          </li>
+          {% if g.user_id %}
+          <li
+            style="
+              padding-block: 18px;
+              border-bottom: 1px solid #ccc;
+              border-top: 1px solid #ccc;
+            "
+          >
+            <div style="display: flex; gap: 4px; align-items: baseline">
+              <i class="fa fa-user-circle"></i>
+              <div>
+                <p style="margin: 3px"><b>{{g.user_info.username}}</b></p>
+                <p style="color: grey; margin: 3px">Go to profile</p>
+              </div>
+            </div>
+          </li>
+          <li id="settings">
+            <a
+              style="color: rgb(78, 70, 70); text-decoration: none"
+              href="{{url_for('settings', user_id=g.user_id)}}"
+            >
+              <i class="fas fa-cog"></i> <span>Settings</span>
+            </a>
+          </li>
+          <li style="display: flex">
+            <a
+              href="{{url_for('logout')}}"
+              style="
+                color: rgb(78, 70, 70);
+                text-decoration: none;
+                flex-grow: 1;
+              "
+            >
+              <i class="fas fa-sign-out"> </i> <span>Log Out</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </header>
+    {% block content %} {% endblock content %}
+    <script
+      src="{{url_for('static', filename='scripts/layout.js')}}"
+      async
+    ></script>
+  </body>
+</html>

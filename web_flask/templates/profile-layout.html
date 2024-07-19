@@ -1,0 +1,227 @@
+{% include "layout.html" %} {% block content %}
+<link rel="stylesheet" href="../static/styles/profile-layout.css" />
+
+<div class="profile-modal">
+  <div class="profile-inner-modal">
+    <aside class="sidebar">
+      <ul>
+        <li>
+          <i
+            class="fas fa-chevron-left chevron"
+            id="profile-modal-visibility-btn"
+            style="display: none"
+          ></i>
+          <p style="margin: 0" id="edit-profile-para">
+            <b>Edit Profile</b>
+          </p>
+        </li>
+        <li class="aside-li" id="info-li">
+          <p>Information</p>
+          <i class="fas fa-chevron-right chevron"></i>
+        </li>
+        <li class="aside-li" id="password-li">
+          <p>Password</p>
+          <i class="fas fa-chevron-right chevron"></i>
+        </li>
+        <li class="aside-li" id="account-deletion-li">
+          <p>Delete Account</p>
+          <i class="fas fa-chevron-right chevron"></i>
+        </li>
+      </ul>
+    </aside>
+    <aside class="aside-detail">
+      <small class="update-success"
+        >{%if g.res_ok %}Update successfully{%else%} {{g.err}}{%endif%}</small
+      >
+      <div id="information-detail">
+        <p style="margin-block-end: 15px" class="aside-header">
+          <i
+            class="fas fa-chevron-left chevron"
+            id="profile-modal-visibility-btn"
+          ></i
+          ><span>Information</span>
+        </p>
+        <form
+          action="{{url_for('settings', user_id=g.user_id)}}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div id="info-user-img-card">
+            <img
+              src="{%if user.image%} {{user.image}} {%else%} ../static/images/logo.png {%endif%}"
+              alt="user-logo"
+              width="100"
+              height="100"
+              style="
+                border-radius: 50%;
+                outline-offset: 8px;
+                outline: 1px var(--btn) solid;
+              "
+            />
+            <div>
+              <label for="uplaod-image" , id="upload-image-label">
+                Upload
+                <i class="fa fa-cloud-upload"></i>
+              </label>
+              <input
+                type="file"
+                name="uplaod-image"
+                id="uplaod-image"
+                hidden
+                accept="image/png, jpg"
+              />
+              <p style="margin: 0">
+                <small style="color: grey">Accepted formats: JPG and PNG</small>
+              </p>
+            </div>
+          </div>
+          <div>
+            <label for="username"
+              ><small><b>Username</b></small></label
+            ><br />
+            <input
+              type="text"
+              name="username"
+              id="username"
+              value="{{user.username}}"
+            /><br />
+          </div>
+          <div>
+            <label for="email"
+              ><small><b>Email Address</b></small></label
+            ><br />
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value="{{user.email}}"
+            /><br />
+          </div>
+          <div>
+            <label for="bio"
+              ><small><b>Bio</b></small></label
+            ><br />
+            <textarea name="bio" rows="3" placeholder="Describe yourself...">
+{% if user.bio%}{{user.bio}}{%endif%}</textarea
+            >
+          </div>
+          <div>
+            <label for="country-input"
+              ><small><b>Country</b></small></label
+            ><br />
+            <div id="countries-container">
+              <input type="text" name="country" id="country-input" hidden />
+              <input type="text" name="country-code" id="country-flag-input" hidden />
+              <div id="country-name">
+                <span id="country-flag" style="margin-right: 10px;" class="fi fi-{{user.country_code}}"></span>
+                <span id="country-flag-name">{{user.country}}</span>
+              </div>
+              <div id="country" hidden></div>
+            </div>
+          </div>
+          <button type="submit" id="submit-btn" name="submit-profile-btn">
+            Save
+          </button>
+        </form>
+      </div>
+
+      <div id="password-detail" hidden>
+        <p style="margin-block-end: 15px" class="aside-header">
+          <i
+            class="fas fa-chevron-left chevron"
+            id="profile-modal-visibility-btn"
+          ></i
+          ><span>Password</span>
+        </p>
+        <form
+          action="{{url_for('settings', user_id=g.user_id)}}"
+          method="post"
+          enctype="multipart/form-data"
+          id="change-password-form"
+        >
+          <label for="current-password"
+            ><small><b>Current Password</b></small></label
+          >
+          <div>
+            <input
+              type="password"
+              name="current-password"
+              id="current-password"
+              required
+            />
+            <small id="show-hide-password">Show</small>
+          </div>
+          <label for="new-password"
+            ><small><b>New Password</b></small></label
+          >
+          <div>
+            <input
+              type="password"
+              name="new-password"
+              id="new-password"
+              required
+            /><br />
+            <small id="new-hide-password">Show</small>
+          </div>
+          <small class="update-success"
+            >{%if g.res_ok %}Update successfully{%else%}
+            {{g.err}}{%endif%}</small
+          >
+          <button type="submit" name="submit-password-btn">Change</button>
+        </form>
+      </div>
+
+      <div id="delete-account-detail" hidden>
+        <p style="margin-block-end: 15px" class="aside-header">
+          <i
+            class="fas fa-chevron-left chevron"
+            id="profile-modal-visibility-btn"
+          ></i
+          ><span>Delete Account</span>
+        </p>
+        <div>
+          <small style="font-size: 15px">
+            <p style="margin-bottom: 5px">
+              <b>Are you sure you want to continue?</b><br />
+            </p>
+            <p>If you delete your account:</p>
+            <ul>
+              <li>You will lose all of your course progress</li>
+              <!-- <li>
+            You will lose access to all your certificates
+          </li> -->
+              <li>All the content you have ever created will be deleted</li>
+              <li>
+                <b
+                  >Account deletion is permanent. This action cannot be
+                  undone</b
+                >
+              </li>
+            </ul>
+          </small>
+          <form action="{{url_for('settings', user_id=user.id)}}" method="post">
+            <button
+              type="submit"
+              name="delete-account-btn"
+              id="delete-account-submit-btn"
+            >
+              Delete Account
+            </button>
+          </form>
+        </div>
+        <script>
+          window.addEventListener("load", function () {
+            $("#delete-account-submit-btn").on("click", (e) => {
+              confirm("Are your sure about deleting your account")
+                ? true
+                : e.preventDefault();
+            });
+          });
+        </script>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock content %}
+<script src="../static/scripts/profile-layout.js"></script>
+{% include "footer.html" %}

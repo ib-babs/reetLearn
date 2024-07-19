@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReetLearn | Sign up</title>
+    <link rel="stylesheet" href="../static/styles/sign-in-up.css" />
+    <script src="../static/scripts/jquery-3.7.1.min.js" async></script>
+    <link
+      rel="stylesheet"
+      href="../static/styles/fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.css"
+    />
+    <link
+      rel="shortcut icon"
+      href="../static/images/logo.png"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <div class="sign-up-container container">
+      <h2>Sign Up</h2>
+      <form action="{{url_for('sign_up')}}" method="post">
+        <label for="user-name">Name</label>
+        <input
+          class="sign-up-input"
+          type="text"
+          name="user-name"
+          id="user-name"
+          required
+        />
+        <label for="user-email">Email</label>
+        <input
+          class="sign-up-input"
+          type="email"
+          name="user-email"
+          id="user-email"
+          required
+        />
+        <label for="user-password">Password</label>
+        <div class="user-password-container">
+          <input
+            class="sign-up-input"
+            type="password"
+            name="user-password"
+            id="user-password"
+            required
+          />
+          <span id="show-hide-password">Show</span>
+        </div>
+        {% if g.res_ok != 200 %}
+        <span class="message">{{g.sign_up_error}}</span>
+        {% endif %}
+        <input type="submit" class="sign-up-in" value="Sign Up" name='submit'/>
+      </form>
+      <div id="or">
+        <hr noshade="noshade" />
+        <span>or </span>
+        <hr noshade="noshade" />
+      </div>
+      <div class="auth">
+        <button class="auth-btn-google">
+          <img
+            class="google-brand"
+            src="../static/images/google-brand.png"
+          />Google
+        </button>
+        <button class="auth-btn-apple">
+          <i class="fab fa-apple"></i>Apple
+        </button>
+        <button class="auth-btn-facebook">
+          <i class="fab fa-facebook-square"></i>Facebook
+        </button>
+      </div>
+      <p style="text-align: center; color: grey">
+        <b>Already have an account? </b>
+        <a
+          href="{{url_for('sign_in')}}"
+          style="text-decoration: none; color: var(--btn)"
+          >Log in</a
+        >
+      </p>
+    </div>
+    <script src="../static/scripts/sign-up-and-sign-in.js"></script>
+  </body>
+</html>

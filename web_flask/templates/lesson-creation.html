@@ -1,0 +1,59 @@
+{% include "layout.html" %} {% block content %}
+<link rel="stylesheet" href="../static/styles/create-course.css" />
+<main>
+  {%if g.res_status_code%} {%if g.res_status_code != 201%}
+  <div class="message-container" style="background-color: var(--danger)">
+    <p id="message">{{g.res_error}}</p>
+  </div>
+  {%else%}
+  <div class="message-container" style="background-color: var(--success)">
+    <p id="message">New lesson added.</p>
+  </div>
+  {%endif%} {%endif%}
+  <div class="form-div">
+    <h1>Add lesson</h1>
+    <form
+      action="{{url_for('add_lesson')}}"
+      method="post"
+      enctype="multipart/form-data"
+      id="course-form"
+    >
+      <div>
+        <label for="course_name">Course Name</label><br />
+        <input type="text" name="course-name" id="course_name" required /><br />
+      </div>
+      <div>
+        <label for="lesson">Lesson Title</label><br />
+        <input type="text" name="lesson" id="lesson" required /><br />
+      </div>
+      <div>
+        <label for="lesson_detail">Lesson Detail</label><br />
+        <textarea
+          name="lesson_detail"
+          id="lesson_detail"
+          rows="8"
+          required
+        ></textarea
+        ><br />
+      </div>
+      <div>
+        <label for="lesson_number">Lesson Number</label><br />
+        <input
+          type="number"
+          name="lesson_number"
+          id="lesson_number"
+          required
+        /><br />
+      </div>
+      <button type="submit" name="add-lesson-submit">Create</button>
+    </form>
+  </div>
+</main>
+<script>
+  window.addEventListener("load", function () {
+    $("#message").fadeOut(3000);
+    $(".message-container").fadeOut(3000);
+  });
+</script>
+{% endblock content %}
+{% include "footer.html" %}

@@ -1,0 +1,128 @@
+main {
+  display: grid;
+  justify-items: center;
+  padding-block: 30px;
+  padding-inline: 10px;
+  background: #c6d4db3b;
+  z-index: 1;
+}
+.lesson-detail-paragraph {
+  white-space-collapse: preserve-breaks;
+  text-justify: distribute-all-lines;
+}
+.header {
+  position: unset;
+}
+main .course-desc {
+  margin-bottom: 30px;
+}
+main .course-desc,
+main .lesson-container {
+  width: clamp(200px, 100%, 500px);
+}
+.course-desc img {
+  width: 5em;
+  height: 5em;
+}
+.course-desc h1 {
+  margin-top: 0;
+  color: black;
+}
+.course-desc {
+  display: flex;
+  background-color: white;
+  padding: 20px;
+  gap: 1.5em;
+}
+
+.lesson-div {
+  position: fixed;
+  inset: 0;
+  background: white;
+  margin: 10px 10px 0 10px;
+  padding: 20px;
+  border-start-start-radius: 10px;
+  border-start-end-radius: 10px;
+  box-shadow: 0 10px 12px 50px whitesmoke;
+}
+
+.lesson-container {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  padding-block: 0;
+  margin-bottom: 7px;
+}
+
+.lesson-list {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.fa-ellipsis-v {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  color: grey;
+  padding: 6px;
+}
+
+.lesson-options {
+  padding-block: 5px;
+  display: none;
+  position: absolute;
+  right: 30px;
+  top: 20px;
+  background: white;
+  box-shadow: 0 0 5px 0.4px #2222;
+}
+.lesson-options .option-link:hover {
+  color: white;
+  border-radius: 4px;
+}
+.lesson-options a:first-child:hover {
+  background-color: var(--btn);
+}
+.lesson-options a:last-child:hover {
+  background-color: var(--danger);
+}
+.lesson-options a {
+  padding-inline: 15px;
+  padding-block: 10px;
+  text-decoration: none;
+}
+.lesson-options a:last-child {
+  color: #ee0000;
+}
+.close-lesson-options {
+  display: grid;
+}
+
+@media screen and (320px <= width < 500px) {
+  .courses .course img {
+    margin: 0;
+    padding-block-start: 20px;
+  }
+  main .course-desc {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+}
+@media screen and (width >= 500px) {
+  .lesson-div{
+    background: var(--bg);
+    box-shadow: 0 10px 12px 50px var(--bg);
+  }
+  .inner-lesson-div{
+    display: flex;
+    flex-direction: column;
+    width: clamp(400px, 90%, 600px);
+    background-color: white;
+    height: 100%;
+    padding: 20px;
+    /* overflow-y: ; */
+    margin: auto;    
+  }
+}

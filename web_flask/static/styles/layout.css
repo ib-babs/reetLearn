@@ -1,0 +1,231 @@
+@font-face {
+  font-family: "Fira Sans Regular";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/FiraSans-Regular.ttf") format("truetype");
+}
+body {
+  margin: 0;
+  font-family: "Fira Sans Regular";
+  overflow-x: hidden;
+  /* user-select: none; */
+}
+img {
+  user-select: none;
+}
+textarea,
+input,
+button {
+  font-family: "Fira Sans Regular";
+}
+
+button {
+  background-color: var(--btn);
+  border: 0;
+}
+
+h1 {
+  margin: 3px;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+:root {
+  --bg: #eeeeff;
+  --border-color: #ccc;
+  --btn: #429ea3;
+  --bg-secondary: #f1f1f1;
+  --card-bg: var(--bg-secondary);
+  --bg-dark: #3a4153;
+  --danger: #ee0021;
+  --success: #20ee10;
+}
+button:hover,
+#upload-image-label:hover,
+#get-started:hover,
+#logout-link:hover, .login-btn:hover, .register-btn:hover {
+  background: #31b3b9;
+  color: white;
+}
+#logout-link {
+  color: var(--btn);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 15px;
+  padding-inline: 25px;
+  position: sticky;
+  top: 0;
+  background-color: var(--bg);
+  z-index: 0;
+}
+
+.header .nav-brand {
+  display: flex;
+}
+.header .nav-brand h1 {
+  display: none;
+  font-family: "Fira Sans Regular";
+  margin-left: 10px;
+  color: black;
+  font-size: 2.5em;
+}
+.header img {
+  height: 50px;
+}
+.header .mobile-navbar {
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.header .mobile-navbar i {
+  font-size: 30px;
+}
+
+.desktop-navbar {
+  display: none;
+  z-index: 0;
+}
+.desktop-navbar ul li {
+  display: flex;
+}
+.desktop-navbar ul a {
+  text-decoration: none;
+  color: initial;
+  width: 100%;
+}
+.desktop-navbar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.login-btn {
+  border: 1px var(--btn) solid;
+  background-color: transparent;
+  color: var(--btn);
+}
+.register-btn {
+  border: none;
+  background-color: var(--btn);
+  color: white;
+}
+.login-btn,
+.register-btn {
+  text-align: center;
+  padding-inline: 2.5em;
+  padding-block: 10px;
+  /* font-size: 1em; */
+}
+
+@media (width >= 768px) {
+  .header {
+    padding: 5px;
+    padding-inline: 10px;
+    gap: 30px;
+  }
+  .header .desktop-navbar ul {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .nav-brand {
+    flex: 1.5;
+  }
+  .header .desktop-navbar {
+    display: block;
+    flex-grow: 2;
+  }
+  .header .desktop-navbar ul {
+    justify-content: space-between;
+  }
+  .header .desktop-navbar ul li {
+    flex-grow: 1;
+  }
+  .header .mobile-navbar {
+    display: none;
+  }
+  .header img {
+    height: 60px;
+  }
+  .header .nav-brand h1 {
+    display: block;
+  }
+  #user-name-nav {
+    display: none;
+  }
+  #user-account-nav-item i {
+    font-size: 1.5em;
+  }
+  .chevron-right {
+    display: none;
+  }
+  #child-ul {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.show-desktop-navbar,
+.profile-nav-menu {
+  display: block;
+  position: absolute;
+  top: 81px;
+  right: 0;
+  width: 270px;
+  background-color: inherit;
+  box-shadow: 0 1px 10px rgba(33, 33, 33, 0.3);
+  border-radius: 0 0 5px 5px;
+  border: 1px inherit solid;
+}
+
+.show-desktop-navbar #parent-ul li {
+  padding-block: 8px;
+  padding-inline-start: 20px;
+  padding-inline-end: 40px;
+}
+
+.show-desktop-navbar #parent-ul #user-account-nav-item {
+  border-top: 1px var(--border-color) solid;
+  border-bottom: 1px var(--border-color) solid;
+  display: flex;
+  justify-content: space-between;
+  color: rgb(58, 50, 50);
+  gap: 10px;
+  align-items: center;
+  padding-block: 22px;
+  color: rgb(121, 116, 116);
+  padding-inline-end: 40px;
+}
+.show-desktop-navbar #child-ul {
+  display: flex;
+  gap: 5px;
+  padding: 0;
+  border-top: 1px var(--border-color) solid;
+}
+
+
+.header .mobile-navbar i:active {
+  transform: rotate(200rad);
+  transition: all ease-in-out 3s;
+}
+
+.profile-nav-menu {
+  display: none;
+}
+.profile-nav-menu li:first-child {
+  padding-bottom: 15px;
+}
+.profile-nav-menu li {
+  color: rgb(78, 70, 70);
+  padding-block: 8px;
+  padding-inline-start: 20px;
+  padding-inline-end: 40px;
+}

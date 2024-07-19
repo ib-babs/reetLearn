@@ -1,0 +1,177 @@
+.intro .intro-child {
+  display: grid;
+  text-align: center;
+  justify-self: center;
+  justify-content: center;
+}
+
+.intro {
+  display: grid;
+  padding-inline: 10px;
+  overflow: hidden;
+  padding-bottom: 13em;
+  background-color: var(--bg);
+}
+.intro h1 {
+  font-size: 2.5em;
+  width: 70%;
+  justify-self: center;
+}
+.courses-and-description .courses-cards h1 {
+  font-size: 2em;
+  font-weight: bolder;
+}
+.intro p {
+  /* font-weight: bold; */
+  color: grey;
+  width: 60%;
+  justify-self: center;
+}
+
+.intro h1,
+.intro p,
+.courses-cards h1 {
+  margin: 0;
+  padding: 2px;
+}
+.courses-and-description {
+  padding: 30px;
+}
+.courses-and-description .courses-cards {
+  background-color: white;
+  padding-inline: 4em;
+  padding-block: 1.5em;
+  padding-bottom: 2em;
+  margin-top: -8em;
+  border-radius: 8px;
+  margin-bottom: 3em;
+  box-shadow: 0 1px 10px rgba(33, 33, 33, 0.3);
+}
+.courses-cards h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.courses-cards .courses,
+.description-cards,
+.reason-to-code {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+.courses-cards .courses div img {
+  width: 5em;
+}
+.description-cards div p,
+.reason-to-code-div p {
+  color: grey;
+}
+.courses-cards .courses div,
+.description-cards div {
+  display: grid;
+  place-items: center;
+  word-break: keep-all;
+  text-align: center;
+  padding: 20px;
+}
+.courses-cards .courses div {
+  border-radius: 5px;
+  background-color: var(--bg);
+  width: 150px;
+  flex-grow: 1;
+}
+.description-cards div h4,
+.description-cards div p {
+  margin: 5px;
+}
+.description-cards div {
+  flex-grow: 1;
+  box-shadow: 0 0 5px rgba(33, 33, 33, 0.3);
+  word-break: keep-all;
+  width: 250px;
+}
+
+.reason-container img {
+  width: 250px;
+}
+.description-cards div img {
+  width: 270px;
+}
+
+.why-code #h1 {
+  text-align: center;
+  font-size: 2.5em;
+}
+.why-code code {
+  background-color: var(--btn);
+  padding-inline: 3px;
+  border-radius: 5px;
+  color: whitesmoke;
+}
+.why-code {
+  background-color: var(--bg);
+  padding: 30px;
+}
+.why-code .reason-to-code {
+  display: flex;
+}
+.reason-container img {
+  padding: 10px;
+  margin-left: -3em;
+}
+.reason-container {
+  flex-grow: 1;
+  text-align: center;
+  width: 100px;
+  padding: 10px;
+  background: linear-gradient(var(--bg) 30%, white 10px);
+}
+.intro button,
+.i-want-to-code-btn {
+  margin-top: 2em;
+  padding-block: 10px;
+  padding-inline: 5em;
+  font-size: 1em;
+  background-color: var(--btn);
+  color: whitesmoke;
+  border: none;
+}
+.i-want-to-code-btn {
+  display: grid;
+  margin: auto;
+  margin-top: 2em;
+}
+@media (320px <= width < 768px) {
+  .intro img {
+    width: 100%;
+    margin-left: 80px;
+  }
+  .intro {
+    padding: 20px;
+    padding-bottom: 13em;
+  }
+  .courses-and-description .courses-cards {
+    padding-inline: 2em;
+  }
+  .reason-container {
+    width: 50%;
+  }
+  .description-cards div {
+    padding: 0;
+    width: 50%;
+  }
+}
+@media (width >= 768px) {
+  .reason-container img {
+    margin-left: 0;
+  }
+  .intro img {
+    margin-left: 120px;
+  }
+  .intro p {
+    width: 550px;
+    font-size: 1.3em;
+  }
+  .intro{
+    padding-block-start: 50px;
+  }
+}

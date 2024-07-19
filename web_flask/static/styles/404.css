@@ -1,0 +1,22 @@
+.page-not-found-container {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  padding-block: 30px;
+  padding-inline: 10px;
+}
+.page-not-found-container h1 {
+  margin-bottom: 0;
+  font-size: 2.5em;
+  color: grey;
+}
+.page-not-found-container img {
+  width: 100%;
+  margin-top: -50px;
+}
+.page-not-found-container p {
+  width: 300px;
+  font-size: 1.1em;
+  color: grey;
+}
+

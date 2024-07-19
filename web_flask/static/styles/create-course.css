@@ -1,0 +1,43 @@
+
+.form-div{
+    padding: 25px;
+    border-radius: 5px;
+    width: clamp(200px, 90%, 520px);
+    background-color: var(--bg);
+}
+.header{
+    position: unset;
+}
+.message-container{
+    padding: 10px;
+    text-align: center;
+    color: white;
+}
+main{
+    background-color: white;
+    display: grid;
+    min-height: 100vh;
+    justify-items: center;
+    padding: 10px;
+}
+#course-form{
+    padding-block: 10px;
+    display: grid;
+    gap: 15px;    
+}
+#course-form div input, textarea, button{
+    width: 90%;
+    padding: 10px;
+    resize: none;
+    border-radius: 5px;
+}
+button{
+    color: white;
+    width: 95%;
+}
+input, textarea{
+    border: 1px solid #ccc;
+}
+input:focus, textarea:focus{
+    outline: 1px solid var(--btn);
+}

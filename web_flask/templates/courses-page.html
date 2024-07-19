@@ -1,0 +1,35 @@
+{% include "layout.html" %} {% block content %}
+<link rel="stylesheet" href="../static/styles/courses-page.css" />
+ <!--div class="current-course">
+  <h1 style="margin-block: 1em; padding-inline: 5px">My Courses</h1>
+  <div class="current-course-div">
+    <img
+      src="../static/images/c-logo.png"
+      alt="c-logo"
+      width="100"
+      height="100"
+    />
+    <p><b>Introduction to C</b></p>
+    <span style="color: rgb(255, 217, 4)">In Progress</span>
+  </div>
+</div-->
+
+<div class="explore-courses">
+  <div class="courses-cards">
+    <h1>Explore courses</h1>
+    <div class="courses">
+      {% if g.available_courses %} {% for course in g.available_courses %}
+      <a href="{{url_for('lesson_page',course_name=course.course_name | lower)}}" style="text-decoration: none; color: inherit;">
+      <div class="course">
+          <img src="{{course.course_image}}" alt="course-image" loading="lazy" />
+          <div>
+            <h4>{{course.course_name}}</h4>
+            <p>{{course.description}}</p>
+          </div>
+        </div>
+      </a>
+      {% endfor %} {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %} {% include "footer.html" %}

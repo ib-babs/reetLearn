@@ -1,0 +1,144 @@
+{% include "layout.html" %} {% block content %}
+<link rel="stylesheet" href="../static/styles/landing_page.css" />
+
+<section>
+  <div class="intro">
+    <div class="intro-child">
+      <h1>Opportunity to learn coding is HERE!</h1>
+      <p>
+        Learn the latest technology with interactive, hands-on courses.
+        <b><span style="color: black">It's free</span></b> <br />
+        <button id='get-started'>Get Started</button>
+      </p>
+      <img src="../static/images/home-perfect-platform-2.svg" loading="lazy" />
+    </div>
+  </div>
+  <div class="courses-and-description">
+    <div class="courses-cards">
+      <h1>Choose a course for you</h1>
+      <div class="courses">
+        <div class="python-course">
+          <img src="../static/images/python-logo.png" alt="" loading="lazy" />
+          <h3>Introduction to Python</h3>
+        </div>
+        <div class="html-course">
+          <img src="../static/images/html-logo.png" alt="" loading="lazy" />
+          <h3>Introduction to HTML</h3>
+        </div>
+        <div class="css-course">
+          <img src="../static/images/css-logo.png" alt="" loading="lazy" />
+          <h3>Introduction to CSS</h3>
+        </div>
+        <div class="javascript-course">
+          <img
+            src="../static/images/javascript-39424.png"
+            alt=""
+            loading="lazy"
+          />
+          <h3>Introduction to JavaScript</h3>
+        </div>
+        <div class="c-course">
+          <img src="../static/images/c-logo.png" alt="" loading="lazy" />
+          <h3>Introduction to C</h3>
+        </div>
+      </div>
+    </div>
+    <div class="description-cards landing-page-section">
+      <div>
+        <img
+          src="../static/images/home-why-solo-1.svg"
+          alt=""
+          loading="lazy"
+          loading="lazy"
+        />
+        <h4>Tailored to you</h4>
+        <p>
+          No matter your experience level, you'll be
+          <b>writing real, functional code within minutes</b> of starting your
+          first course. <br />
+          <!-- <button class="description-btn">Start Learning</button> -->
+        </p>
+      </div>
+      <div>
+        <img src="../static/images/home-why-solo-2.svg" alt="" loading="lazy" />
+        <h4>Beginner Friendly</h4>
+        <p>
+          Providing you with a great experience as a beginner as you start your
+          tech career. <br />
+          <!-- <button class="description-btn">Become Certified</button> -->
+        </p>
+      </div>
+      <div>
+        <img
+          src="../static/images/home-perfect-platform-1-rebranding.svg"
+          alt=""
+        />
+        <h4>Self-Paced Learning</h4>
+        <p>
+          You are welcome to schedule your calender for the days you will be
+          taking your course.
+          <!-- <button class="description-btn">Become Certified</button> -->
+        </p>
+      </div>
+      <div>
+        <img src="../static/images/home-why-solo-5.svg" alt="" loading="lazy" />
+        <h4>Afraid of getting lost?</h4>
+        <p>
+          We got you covered! Don't panic, <b> your progress is tracked!</b>
+          <!-- <button class="description-btn">Become Certified</button> -->
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="why-code landing-page-section">
+    <h1 id="h1">Why <code>code?</code></h1>
+    <div class="reason-to-code">
+      <div class="reason-container">
+        <img
+          src="../static/images/home-why-code-1.svg"
+          alt="why-code-1"
+          loading="lazy"
+        />
+        <div class="reason-to-code-div">
+          <h1>It's popular</h1>
+          <p>
+            <b>Technical skills are in high demand.</b> Over 60% of new jobs
+            worldwide will require tech skills.
+          </p>
+        </div>
+      </div>
+      <div class="reason-container">
+        <img
+          src="../static/images/home-why-code-2.svg"
+          alt="why-code-2"
+          loading="lazy"
+        />
+        <div class="reason-to-code-div">
+          <h1>It's promising</h1>
+          <p>
+            Unlock your earning potential! Entry-level programmers in the U.S.
+            earn <b>on average over $78,000 in salary.</b>
+          </p>
+        </div>
+      </div>
+      <div class="reason-container">
+        <img
+          src="../static/images/home-why-code-3.svg"
+          alt="why-code-3"
+          loading="lazy"
+        />
+        <div class="reason-to-code-div">
+          <h1>It's fun</h1>
+          <p>
+            Imagine combining your passion and skill with your creativity, and
+            <b>making something new everyday! </b>
+          </p>
+        </div>
+      </div>
+    </div>
+    <button class="i-want-to-code-btn">I want to code</button>
+  </div>
+</section>
+{% endblock content %}
+{% include "footer.html" %}
