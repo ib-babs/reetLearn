@@ -14,3 +14,4 @@ from api.v1.views.course_creation import *
 from api.v1.views.quiz_creation import *
 from api.v1.views.available_courses import *
 from api.v1.views.available_quizes import *
+from api.v1.views.index import *
