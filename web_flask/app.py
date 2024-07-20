@@ -8,7 +8,6 @@ from models import db, User
 import requests
 from PIL import Image
 import os
-from bcrypt import checkpw
 
 from models.available_courses import AvailableCourses
 from models.custom_course_table import Course
@@ -16,8 +15,8 @@ from models.custom_course_table import Course
 app = Flask(__name__)
 login_manager = LoginManager(app)
 login_manager.init_app(app)
-app.config['SECRET_KEY'] = "bbc021c9a7c47d437e2a6083906cc20753f401ccb524bdaf499cd432b3ca64a0'"
-
+app.config['SECRET_KEY'] = os.getenv('WEB_FLASK_SECRET_KEY')
+API_URL = os.getenv('API_URL')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -41,7 +40,7 @@ def sign_up():
             "username": username, "email":
             (email), "password": (password)
         })
-        res = requests.post('http://localhost:5001/api/v1/register',
+        res = requests.post(f'{API_URL}/register',
                             data=data, headers={"Content-Type": "application/json"})
         g.res_ok = res.status_code
         if res.status_code == 201:
@@ -64,7 +63,7 @@ def sign_in():
             "email": email, "password": password
         })
         res = requests.post(
-            'http://localhost:5001/api/v1/login', json_data, headers={"Content-Type": "application/json"})
+            f'{API_URL}/login', json_data, headers={"Content-Type": "application/json"})
         g.res_ok = res.status_code
         print(g.res_ok)
         if res.status_code == 200:
@@ -89,7 +88,7 @@ def profile(user_id):
 def course_page():
     g.user_id = session.get('user_id')
     g.user_info = session.get('user_info')
-    res = requests.get(f'http://localhost:5001/api/v1/available-courses')
+    res = requests.get(f'{API_URL}/available-courses')
     try:
         g.available_courses = res.json()
     except Exception as e:
@@ -107,7 +106,7 @@ def lesson_page(course_name):
     if not g.course:
         return redirect(url_for('course_page'))
     res = requests.get(
-        f'http://localhost:5001/api/v1/course-table/{course_name}', headers={"Authorization": f"Bearer {session.get('token')}"})
+        f'{API_URL}/course-table/{course_name}', headers={"Authorization": f"Bearer {session.get('token')}"})
     try:
         g.lessons = res.json()
         g.corse_name = str(course_name).capitalize()
@@ -129,7 +128,7 @@ def edit_lesson(course_name, lesson_id):
     if request.method == 'POST' and 'edit-lesson-submit' in request.form:
         form = request.form
         res = requests.put(
-            f'http://localhost:5001/api/v1//lesson/{course_name}/{lesson_id}',
+            f'{API_URL}//lesson/{course_name}/{lesson_id}',
             data=json.dumps(form), headers={"Authorization": f"Bearer {session.get('token')}",
                                             'Content-Type': 'application/json'})
         g.res_status_code = res.status_code
@@ -147,7 +146,7 @@ def delete_lesson(course_name, lesson_id):
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     res = requests.delete(
-            f'http://localhost:5001/api/v1//lesson/{course_name}/{lesson_id}',
+            f'{API_URL}//lesson/{course_name}/{lesson_id}',
             headers={"Authorization": f"Bearer {session.get('token')}"})
     if res.status_code != 410:
         g.res_error = res.json().get('msg')
@@ -188,7 +187,7 @@ def settings(user_id):
                 data['image'] = f'../static/user-images/{current_user.id}/{image.filename}'
             except Exception as e:
                 pass
-        res = requests.post(f'http://localhost:5001/api/v1/user/{current_user.id}', data=json.dumps(data), headers={
+        res = requests.post(f'{API_URL}/user/{current_user.id}', data=json.dumps(data), headers={
             "Content-Type": "application/json", 'Authorization': f'Bearer {session.get("token")}'})
         # try:
         if res.status_code == 200:
@@ -200,7 +199,7 @@ def settings(user_id):
 
     if request.method == 'POST' and 'submit-password-btn' in request.form:
         if 'current-password' in form and 'new-password' in form:
-            res = requests.post(f'http://localhost:5001/api/v1/user/{current_user.id}',
+            res = requests.post(f'{API_URL}/user/{current_user.id}',
                                 data=json.dumps({'current-password': form.get('current-password'),
                                                 'new-password': form.get('new-password')
                                                  }), headers={
@@ -215,7 +214,7 @@ def settings(user_id):
         return render_template('profile-layout.html', user=current_user)
 
     if request.method == 'POST' and 'delete-account-btn' in form:
-        res = requests.delete(f'http://localhost:5001/api/v1/user/{current_user.id}',
+        res = requests.delete(f'{API_URL}/user/{current_user.id}',
                               headers={'Authorization': f"Bearer {session.get('token')}"})
         if res.status_code == 200:
             session.clear()
@@ -259,7 +258,7 @@ def create_course():
 
                 except Exception as e:
                     print(e)
-        res = requests.post('http://localhost:5001/api/v1/new-course',
+        res = requests.post(f'{API_URL}/new-course',
                             data=json.dumps(data), headers={'Content-Type': 'application/json',
                                                             'Authorization': f'Bearer {session.get("token")}'})
         g.res_status_code = res.status_code
@@ -278,7 +277,7 @@ def add_lesson():
     form = request.form
     if request.method == 'POST' and 'add-lesson-submit' in form:
         course_name = form.get('course-name')
-        res = requests.post(f'http://localhost:5001/api/v1/add-lesson/{course_name}',
+        res = requests.post(f'{API_URL}/add-lesson/{course_name}',
                             data=json.dumps(form), headers={'Content-Type': 'application/json',
                                                             'Authorization': f'Bearer {session.get("token")}'})
         g.res_status_code = res.status_code
