@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 import models
 from models.base_model import Base
 from sqlalchemy.engine import reflection
-
+from os import getenv
 
 def db_exist(class_name, db):
     inspector = reflection.Inspector.from_engine(db)
@@ -21,11 +21,16 @@ class DB:
     __session = None
 
     def __init__(self) -> None:
+        username = getenv('REETLEARN_MYSQL_USERNAME')
+        password = getenv('REETLEARN_MYSQL_PASS')
+        host = getenv('REETLEARN_MYSQL_HOST')
+        port = getenv('REETLEARN_MYSQL_PORT')
+        database_name = getenv('REETLEARN_MYSQL_DB')
         self.__engine = create_engine(
-            "mysql+mysqldb://root:root@localhost/reetlearn")
+            f"mysql+mysqldb://{username}:{password}@{host}:{port}/{database_name}")
 
     def all(self, cls=None):
-        #         """query on the current database session"""
+        """query on the current database session"""
         new_dict = {}
         if cls and (cls.__tablename__ in clss or
                     db_exist(cls.__name__.lower(), self.__engine)):

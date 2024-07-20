@@ -6,3 +6,4 @@ pillow
 bcrypt
 sqlalchemy
 mysqlclient
+gunicorn

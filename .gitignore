@@ -3,4 +3,4 @@ __pycache__
 .vscode
 0-main.py
 intial_db.py
-
+.env

@@ -10,8 +10,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 app.register_blueprint(app_views)
-app.config['SECRET_KEY'] = '6caad7bb00b457dae71cd097513078e2'
-app.config['JWT_SECRET_KEY'] = '013520634d10aab7f4774e6ba295e43c'
+app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
+app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY')
 jwt = JWTManager(app)
 
 
@@ -48,10 +48,4 @@ def not_found(error):
 
 if __name__ == "__main__":
     """ Main Function """
-    host = environ.get('HBNB_API_HOST')
-    port = environ.get('HBNB_API_PORT')
-    if not host:
-        host = '0.0.0.0'
-    if not port:
-        port = '5001 '
     app.run()
