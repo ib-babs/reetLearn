@@ -2,28 +2,52 @@
 from io import BytesIO
 import json
 from pathlib import Path
+import shutil
 from flask import Flask, render_template, url_for, request, redirect, g, session
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import db, User
 import requests
 from PIL import Image
 import os
-
 from models.available_courses import AvailableCourses
 from models.custom_course_table import Course
+from functools import wraps
 
 app = Flask(__name__)
 login_manager = LoginManager(app)
 login_manager.init_app(app)
-app.config['SECRET_KEY'] = os.getenv('WEB_FLASK_SECRET_KEY')
-API_URL = os.getenv('API_URL')
+app.config['SECRET_KEY'] = os.getenv(
+    'WEB_FLASK_SECRET_KEY', "bbc021c9a7c47d437e2a6083906cc20753f401ccb524bdaf499cd432b3ca64a0'")
+API_URL = os.getenv('API_URL', 'http://localhost:5001/api/v1')
+
 
 @login_manager.user_loader
 def load_user(user_id):
     user = db.get(User, user_id)
     if user:
+        g.user_id = user.id
+        g.user_info = user.to_dict()
         return user
     return None
+
+def is_token_valid(func):
+    '''Checking access token for the api endpoints'''
+    @wraps(func)
+    def validate_user_token(*args, **kwargs):
+        '''Validating token'''
+        if current_user.is_authenticated:
+            res = requests.get(f'{API_URL}/check_token_status',
+                           headers={'Authorization': f'Bearer {session.get("token")}'})
+            if res.status_code == 401:
+                session.clear()
+                g.user_info = None
+                g.user_id = None
+                logout_user()
+                return render_template('expired_token.html')
+            if res.status_code == 200:
+                return func(*args, **kwargs)
+    return validate_user_token
+
 
 
 @app.route("/sign-up", methods=['GET', 'POST'])
@@ -68,8 +92,6 @@ def sign_in():
         print(g.res_ok)
         if res.status_code == 200:
             login_user(db.get(User, res.json().get('user').get('id')))
-            session['user_info'] = current_user.to_dict()
-            session['user_id'] = current_user.id
             session['token'] = res.json().get('access_token')
             return redirect(url_for('profile', user_id=current_user.id))
     return render_template('sign-in.html')
@@ -77,17 +99,15 @@ def sign_in():
 
 @app.route("/profile/<user_id>", methods=['GET', 'POST'])
 @login_required
+@is_token_valid
 def profile(user_id):
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     return render_template('profile.html')
 
 
-@app.route("/course-page", methods=['GET', 'POST'])
+@app.route("/courses", methods=['GET', 'POST'])
 @login_required
+@is_token_valid
 def course_page():
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     res = requests.get(f'{API_URL}/available-courses')
     try:
         g.available_courses = res.json()
@@ -96,11 +116,10 @@ def course_page():
     return render_template('courses-page.html')
 
 
-@app.route("/lesson-page/<course_name>", methods=['GET', 'POST'])
+@app.route("/learn/<course_name>", methods=['GET', 'POST'])
 @login_required
+@is_token_valid
 def lesson_page(course_name):
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     g.course = db._DB__session.query(AvailableCourses).filter(
         AvailableCourses.course_name == course_name).first()
     if not g.course:
@@ -116,49 +135,24 @@ def lesson_page(course_name):
     return render_template('lesson-page.html')
 
 
-@app.route("/edit-lesson/<course_name>/<lesson_id>", methods=['GET', 'POST'])
-@login_required
-def edit_lesson(course_name, lesson_id):
-    if current_user.role == 'user':
-        return redirect(url_for('course_page'))
-    g.course_name = course_name
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
-    g.lesson = db.get(Course(course_name), lesson_id)
-    if request.method == 'POST' and 'edit-lesson-submit' in request.form:
-        form = request.form
-        res = requests.put(
-            f'{API_URL}//lesson/{course_name}/{lesson_id}',
-            data=json.dumps(form), headers={"Authorization": f"Bearer {session.get('token')}",
-                                            'Content-Type': 'application/json'})
-        g.res_status_code = res.status_code
-        if res.status_code != 200:
-            g.res_error = res.json().get('msg')
-        else:
-            return redirect(url_for('lesson_page', course_name=course_name))
-    return render_template('edit-lesson-page.html')
-
 @app.route('/delete-lesson/<course_name>/<lesson_id>', methods=['GET', 'DELETE'])
 @login_required
 def delete_lesson(course_name, lesson_id):
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     res = requests.delete(
-            f'{API_URL}//lesson/{course_name}/{lesson_id}',
-            headers={"Authorization": f"Bearer {session.get('token')}"})
+        f'{API_URL}//lesson/{course_name}/{lesson_id}',
+        headers={"Authorization": f"Bearer {session.get('token')}"})
     if res.status_code != 410:
         g.res_error = res.json().get('msg')
     return redirect(url_for('lesson_page', course_name=course_name))
-        
+
 
 @app.route("/settings/<user_id>", methods=['GET', 'POST', 'PUT', 'DELETE'])
 @login_required
+@is_token_valid
 def settings(user_id):
     form = request.form
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     if request.method == 'POST' and 'submit-profile-btn' in request.form:
         data = {}
         if 'email' in request.form:
@@ -192,8 +186,8 @@ def settings(user_id):
         # try:
         if res.status_code == 200:
             g.res_ok = True
-            session['user_info'] = res.json().get('user_info')
-            return render_template('profile-layout.html', user=session['user_info'])
+            g.user_info = res.json().get('user_info')
+            return render_template('profile-layout.html', user=g.user_info)
         else:
             g.res_ok = False
 
@@ -206,8 +200,7 @@ def settings(user_id):
                                     "Content-Type": "application/json", 'Authorization': f'Bearer {session.get("token")}'})
             if res.status_code == 200:
                 g.res_ok = True
-                session['user_info'] = res.json().get('user_info')
-                return render_template('profile-layout.html', user=session['user_info'])
+                return render_template('profile-layout.html', user=g.user_info)
             else:
                 g.res_ok = False
                 g.err = res.json().get('msg')
@@ -225,9 +218,8 @@ def settings(user_id):
 
 @app.route('/create-course', methods=['GET', 'POST'])
 @login_required
+@is_token_valid
 def create_course():
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     form = request.form
@@ -237,7 +229,6 @@ def create_course():
         data = {}
         if course_name:
             data['course-name'] = course_name
-
         if description:
             data['description'] = description
 
@@ -248,9 +239,9 @@ def create_course():
                     path = Path(
                         f'{os.getcwd()}/web_flask/static/courses-image/{course_name.replace(" ", "_")}')
                     if path.exists():
-                        import shutil
                         shutil.rmtree(path)
-                        data['course-image'] = f'../static/courses-image/{course_name.replace(" ", "_")}/{image.filename}'
+                        data[
+                            'course-image'] = f'../static/courses-image/{course_name.replace(" ", "_")}/{image.filename}'
                     path.mkdir(mode=511, exist_ok=True)
                     img = Image.open(BytesIO(image.read()))
                     img.thumbnail((600, 600))
@@ -267,11 +258,59 @@ def create_course():
     return render_template('create-course.html')
 
 
-@app.route('/lesson-creation', methods=['GET', 'POST'])
+@app.route('/edit-course/<course_name>/<course_id>', methods=['PUT', 'POST', 'GET'])
 @login_required
+@is_token_valid
+def edit_course(course_name, course_id):
+    '''Edit a course description and image if available'''
+    form = request.form
+    if request.method == 'POST' and 'edit-course-submit' in form:
+        data = {'description': form.get('description')}
+        image = request.files.get('course-image')
+        if image and image.filename:
+            try:
+                    path = Path(
+                        f'{os.getcwd()}/web_flask/static/courses-image/{course_name.replace(" ", "_")}')
+                    if path.exists():
+                        shutil.rmtree(path)
+                        data[
+                            'course-image'] = f'../static/courses-image/{course_name.replace(" ", "_")}/{image.filename}'
+                    path.mkdir(mode=511, exist_ok=True)
+                    img = Image.open(BytesIO(image.read()))
+                    img.thumbnail((600, 600))
+                    img.save(path.joinpath(image.filename))
+            except Exception as e:
+                    print(e)
+        res = requests.put(f'{API_URL}/available-course/{course_id}',
+                           data=json.dumps(data), headers={
+                               'Content-Type': 'application/json',
+                               'Authorization': f'Bearer {session.get("token")}'
+                           })
+        g.res_status = res.status_code
+        if res.status_code != 200:
+            g.res_error = res.json().get('msg')
+    return redirect(url_for('course_page'))
+
+@app.route('/delete-course/<course_name>', methods=['GET', 'DELETE'])
+@login_required
+@is_token_valid
+def delete_course(course_name):
+    """Delete course. This drop the course table from the database"""
+    res = requests.delete(f'{API_URL}/delete-course/{course_name}', headers={'Authorization': f'Bearer {session.get("token")}'})
+    g.res_status_code = res.status_code
+    if res.status_code != 410:
+            g.res_error = res.json().get('msg')
+    if res.status_code == 410:
+        path = Path(f'{os.getcwd()}/web_flask/static/courses-image/{course_name.replace(" ", "_")}')
+        if path.exists():
+            shutil.rmtree(path)
+    return redirect(url_for('course_page'))
+    
+
+@app.route('/new-lesson', methods=['GET', 'POST'])
+@login_required
+@is_token_valid
 def add_lesson():
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     form = request.form
@@ -286,10 +325,28 @@ def add_lesson():
     return render_template('lesson-creation.html')
 
 
+@app.route("/edit-lesson/<course_name>/<lesson_id>", methods=['GET', 'POST'])
+@login_required
+@is_token_valid
+def edit_lesson(course_name, lesson_id):
+    if current_user.role == 'user':
+        return redirect(url_for('course_page'))
+    g.course_name = course_name
+    g.lesson = db.get(Course(course_name), lesson_id)
+    if request.method == 'POST' and 'edit-lesson-submit' in request.form:
+        form = request.form
+        res = requests.put(
+            f'{API_URL}//lesson/{course_name}/{lesson_id}',
+            data=json.dumps(form), headers={"Authorization": f"Bearer {session.get('token')}",
+                                            'Content-Type': 'application/json'})
+        g.res_status_code = res.status_code
+        if res.status_code != 200:
+            g.res_error = res.json().get('msg')
+    return redirect(url_for('lesson_page', course_name=course_name))
+
+
 @app.get('/landing-page')
 def landing_page():
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     if current_user.is_authenticated:
         return redirect(url_for('profile', user_id=current_user.id))
     return render_template('landing_page.html')
@@ -297,8 +354,6 @@ def landing_page():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    g.user_id = session.get('user_id')
-    g.user_info = session.get('user_info')
     return render_template('404.html')
 
 

@@ -61,7 +61,6 @@ button:hover,
   position: sticky;
   top: 0;
   background-color: var(--bg);
-  z-index: 0;
 }
 
 .header .nav-brand {
@@ -91,7 +90,6 @@ button:hover,
 
 .desktop-navbar {
   display: none;
-  z-index: 0;
 }
 .desktop-navbar ul li {
   display: flex;
@@ -119,7 +117,6 @@ button:hover,
 .login-btn,
 .register-btn {
   text-align: center;
-  padding-inline: 2.5em;
   padding-block: 10px;
   /* font-size: 1em; */
 }
@@ -173,6 +170,12 @@ button:hover,
   }
 }
 
+:not(.desktop-navbar, .header){
+  z-index: 0;
+}
+.desktop-navbar, .header{
+  z-index: 1;
+}
 .show-desktop-navbar,
 .profile-nav-menu {
   display: block;
@@ -208,7 +211,6 @@ button:hover,
   display: flex;
   gap: 5px;
   padding: 0;
-  border-top: 1px var(--border-color) solid;
 }
 
 

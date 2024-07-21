@@ -65,7 +65,7 @@ def get_all_lesson(course_name):
 @app_views.post('/add-lesson/<course_name>', strict_slashes=False)
 @jwt_required()
 def add_lesson(course_name):
-    if not db_exist(course_name):
+    if not db_exist(course_name.replace(' ', '_')):
         return jsonify({"msg": "No course with such name!"}), 404
     data = request.get_json()
     if not data:
@@ -131,18 +131,17 @@ def delete_lesson(course_name, lesson_id):
         db.save()
     except Exception as e:
         return jsonify({"msg": "Error encountered"}), 500
-    return jsonify({"msg": f"{course_name}.{lesson.id} has been deleted!"}), 410
+    return jsonify({"msg": f"{course_name}.{lesson.id} has been successfully deleted!"}), 410
 
 
-@app_views.delete('/drop-course-table/<table_name>', strict_slashes=False)
+@app_views.delete('/delete-course/<course_name>', strict_slashes=False)
 @jwt_required()
-def drop(table_name):
-    check_user_role(get_jwt_identity().get('role'))
-    if not db_exist(table_name):
+def drop(course_name):
+    if not db_exist(course_name.replace(' ', '_')):
         return jsonify({"msg": "No table with such name!"}), 404
     available_course = db._DB__session.query(AvailableCourses).\
-        filter(AvailableCourses.course_name == table_name.capitalize()).first()
-    MyCourse = Course(table_name)
+        filter(AvailableCourses.course_name == course_name.capitalize()).first()
+    MyCourse = Course(course_name)
     try:
         db.drop_table(MyCourse)
         db.delete(available_course)
@@ -150,4 +149,4 @@ def drop(table_name):
     except Exception as e:
         print(e)
         return jsonify({"msg": "Error encountered"}), 500
-    return jsonify({"msg": f"{table_name} has been dropped!"}), 404
+    return jsonify({"msg": f"{course_name} has been successfully deleted!"}), 410

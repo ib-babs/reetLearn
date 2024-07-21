@@ -1,0 +1,10 @@
+{% include "layout.html" %}
+{% block content %}
+<div>
+    <p>Token has expired! Sign in again to continue.</p>
+
+    <small>This is done to protect you and our api from being abused</small>
+    <br>
+    <a href="{{url_for('sign_in')}}">Sign in</a>
+</div>
+{% endblock content %}

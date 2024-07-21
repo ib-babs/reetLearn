@@ -3,10 +3,24 @@ from datetime import datetime, timedelta
 from models import db
 from models.user import User
 from api.v1.views import app_views
-from flask import jsonify, request, abort, make_response
+from flask import jsonify, request
 from flask_jwt_extended import get_jwt_identity, create_access_token, jwt_required, decode_token
 import bcrypt
 
+
+@app_views.get('/check_token_status')
+@jwt_required()
+def check_token():
+    '''Check token validity'''
+    current_user = get_jwt_identity()
+    if current_user:
+        token_info = decode_token(request.headers['Authorization'].split()[1])
+        exp_time = datetime.fromtimestamp(token_info['exp'])
+        current_time = datetime.utcnow()
+        if current_time > exp_time:
+            return jsonify({"msg": "Token expired"}), 401
+        return jsonify({"msg": "Token valid"}), 200
+    return jsonify({'msg': "Login required"})
 
 @app_views.post('/register', strict_slashes=False)
 def register():
@@ -43,7 +57,7 @@ def login():
 
     if user and bcrypt.checkpw(str(password).encode(), user.password.encode()):
         access_token = create_access_token(
-            identity=user.to_dict(), expires_delta=timedelta(days=5))
+            identity=user.to_dict(), expires_delta=timedelta(days=20))
         return jsonify({"access_token": access_token, 'user': user.to_dict()}), 200
     return jsonify({"msg": "Email or password is incorrect!"}), 404
 
@@ -94,7 +108,8 @@ def edit_user(user_id):
                 and len(str(new_password)) > 5:
                 user.password = new_password
             else:
-                return jsonify({'msg': "Current password is incorrect!"}), 400
+                return jsonify({'msg': "Current password is either incorrect or \
+                                the length of the new password is 5 or less!"}), 400
         if country and country != user.country:
             user.country = country
         if country_code and country_code != user.country_code:

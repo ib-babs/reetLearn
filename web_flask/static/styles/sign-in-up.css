@@ -31,7 +31,6 @@ body {
   display: grid;
   flex-wrap: wrap;
   flex-direction: column;
-  width: clamp(200px, 62%, 400px);
   place-self: center;
 }
 
@@ -146,6 +145,10 @@ form{
   .auth{
     flex-direction: column;
   }
+  
+.auth-btn-google {
+  justify-content: center;
+}
 }
 @media screen and (width >= 768px) {
   .container {

@@ -21,11 +21,11 @@ class DB:
     __session = None
 
     def __init__(self) -> None:
-        username = getenv('REETLEARN_MYSQL_USERNAME')
-        password = getenv('REETLEARN_MYSQL_PASS')
-        host = getenv('REETLEARN_MYSQL_HOST')
-        port = getenv('REETLEARN_MYSQL_PORT')
-        database_name = getenv('REETLEARN_MYSQL_DB')
+        username = getenv('REETLEARN_MYSQL_USERNAME', 'root')
+        password = getenv('REETLEARN_MYSQL_PASS', 'root')
+        host = getenv('REETLEARN_MYSQL_HOST', 'localhost')
+        port = getenv('REETLEARN_MYSQL_PORT', '3306')
+        database_name = getenv('REETLEARN_MYSQL_DB', 'reetlearn')
         self.__engine = create_engine(
             f"mysql+mysqldb://{username}:{password}@{host}:{port}/{database_name}")
 

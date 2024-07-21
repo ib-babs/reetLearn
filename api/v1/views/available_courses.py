@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 from datetime import datetime
 from models import db, AvailableCourses
-from api.v1.views import app_views, check_user_role
-from flask import jsonify, request, abort, make_response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from api.v1.views import app_views
+from flask import jsonify, request
+from flask_jwt_extended import jwt_required
 
 
 @app_views.get('/available-courses', strict_slashes=False)
@@ -24,7 +24,6 @@ def get_course_available(available_course_id):
 @app_views.put('/available-course/<available_course_id>', strict_slashes=False)
 @jwt_required()
 def edit_available_course(available_course_id):
-    check_user_role(get_jwt_identity().get('role'))
     if not request.get_json():
         return jsonify({'msg': 'Not a JSON'}), 400
     available_course = db.get(AvailableCourses, available_course_id)
@@ -43,6 +42,6 @@ def edit_available_course(available_course_id):
             db.save()
         except Exception as e:
             db.rollback_transaction()
-        return make_response(jsonify({'message':
-                                      f"AvailableCourses.{available_course_id} has been updated"}))
+        return jsonify({'msg':
+                                      f"{available_course.course_name} has been successfully updated"}), 200
     return jsonify(msg="No available_courses data field found"), 400

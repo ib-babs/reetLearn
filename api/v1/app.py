@@ -10,8 +10,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 app.register_blueprint(app_views)
-app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
-app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY')
+app.config['SECRET_KEY'] = environ.get('SECRET_KEY', '013520634d10aab7f4774e6ba295e43c')
+app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY', '6caad7bb00b457dae71cd097513078e2')
 jwt = JWTManager(app)
 
 
@@ -21,18 +21,6 @@ def close_db(error):
     db.close()
 
 
-@app.get('/check_token')
-@jwt_required()
-def check_token():
-    current_user = get_jwt_identity()
-    if current_user:
-        token_info = decode_token(request.headers['Authorization'].split()[1])
-        exp_time = datetime.fromtimestamp(token_info['exp'])
-        current_time = datetime.utcnow()
-        if current_time > exp_time:
-            return jsonify({"msg": "Token expired"}), 401
-        return jsonify({"msg": "Token valid"}), 200
-    return jsonify({'msg': "Login required"})
 
 
 @app.errorhandler(404)

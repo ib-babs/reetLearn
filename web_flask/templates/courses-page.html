@@ -1,6 +1,7 @@
 {% include "layout.html" %} {% block content %}
+<link rel="stylesheet" href="../static/styles/create-course.css" />
 <link rel="stylesheet" href="../static/styles/courses-page.css" />
- <!--div class="current-course">
+<!--div class="current-course">
   <h1 style="margin-block: 1em; padding-inline: 5px">My Courses</h1>
   <div class="current-course-div">
     <img
@@ -19,17 +20,92 @@
     <h1>Explore courses</h1>
     <div class="courses">
       {% if g.available_courses %} {% for course in g.available_courses %}
-      <a href="{{url_for('lesson_page',course_name=course.course_name | lower)}}" style="text-decoration: none; color: inherit;">
-      <div class="course">
-          <img src="{{course.course_image}}" alt="course-image" loading="lazy" />
-          <div>
-            <h4>{{course.course_name}}</h4>
-            <p>{{course.description}}</p>
+      <div style="background-color: white" class="course-card-container">
+        <a
+          href="{{url_for('lesson_page',course_name=course.course_name | lower)}}"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="course">
+            <img
+              src="{{course.course_image}}"
+              alt="course-image"
+              loading="lazy"
+            />
+            <div>
+              <h4>{{course.course_name}}</h4>
+              <p>{{course.description}}</p>
+
+              {%if g.user_info.role == 'admin' %}
+              <nav class="course-options">
+                <a class="edit-link option-link">Edit</a>
+                <a
+                  class="option-link delete-lesson-link"
+                  href="{{url_for('delete_course', course_name=course.course_name)}}"
+                  >Delete</a
+                >
+              </nav>
+              {%endif%}
+            </div>
           </div>
+        </a>
+      </div>
+      <main class="edit-delete-course-main">
+        <div class="form-div">
+          <div style="display: flex; gap: 30px; align-items: baseline">
+            <i
+              class="fa fa-arrow-circle-left"
+              style="padding: 5px; font-size: 1.2em"
+            ></i>
+            <h1>Edit Course</h1>
+          </div>
+          <form
+            action="{{url_for('edit_course', course_name=course.course_name, course_id=course.id)}}"
+            method="post"
+            enctype="multipart/form-data"
+            class="course-form"
+          >
+            <div>
+              <label for="description">Description</label><br />
+              <textarea name="description" id="description" rows="8" required>{{course.description}}</textarea><br />
+            </div>
+            <div>
+              <label for="course-image">Course Image</label><br />
+              <input
+                type="file"
+                name="course-image"
+                id="course-image"
+                accept="image/png, jpg"
+              /><br />
+            </div>
+            <button type="submit" name="edit-course-submit">
+              Save Change
+            </button>
+          </form>
         </div>
-      </a>
+      </main>
+
       {% endfor %} {% endif %}
     </div>
   </div>
 </div>
+<script async>
+  window.addEventListener("load", () => {
+    $.each($(".course-options"), (idx, val) => {
+      $($(val).children(".edit-link")).click(() => {
+        $($(".edit-delete-course-main")[idx]).toggle(500);
+      });
+    });
+    $.each($(".fa-arrow-circle-left"), (idx, val) => {
+      $(val).click(() => {
+        $($(".edit-delete-course-main")[idx]).toggle(500);
+      });
+    });
+    $(".delete-lesson-link").click(function (e) {
+      confirm(`Are your sure about deleting this course?
+All the lessons are going to be lost! Do you want to continue?`)
+        ? true
+        : e.preventDefault();
+    });
+  });
+</script>
 {% endblock content %} {% include "footer.html" %}
