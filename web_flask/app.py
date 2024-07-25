@@ -102,7 +102,7 @@ def sign_in():
 @login_required
 @is_token_valid
 def profile(user_id):
-    print(g.user_info.image)
+    print('Debugging ', g.user_info)
     return render_template('profile.html')
 
 
