@@ -1,4 +1,5 @@
 window.addEventListener("load", () => {
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -19,21 +20,23 @@ window.addEventListener("load", () => {
   /**
    * Menu button =
    */
-  $(collapseDesktopMenu).click(function () {
-    $(menu).toggleClass("show-desktop-navbar");
-    $(collapseDesktopMenu).toggleClass("fa-close");
-    $(".profile-nav-menu").css("display", "none");
+  $(collapseDesktopMenu).click(function (e) {
+
+    if (window.outerWidth < 768) {
+      if ($(".profile-nav-menu").css("display") === "block")
+        $(".profile-nav-menu").css("display", "none");
+      else $(menu).toggle();
+      $(collapseDesktopMenu).toggleClass("fa-close");
+    }
   });
 
   /**
    * Goto user account navbar
    */
   $("#user-account-nav-item").click(() => {
-    if ($(".profile-nav-menu").css("display") === "none") {
-      $(".profile-nav-menu").css("display", "block");
-    } else {
-      $(".profile-nav-menu").css("display", "none");
-    }
+    $(".profile-nav-menu").toggle();
+
+    if (window.outerWidth < 768) $(".desktop-navbar").toggle();
   });
 
   /**
@@ -41,17 +44,19 @@ window.addEventListener("load", () => {
    * Changes menu icon
    * Hides desktop navbar
    */
-  $(
-    "#goto-desktop-navbar, #profile-modal-closer, #profile-modal-visibility-btn, #x-close-setting-modal"
-  ).click(() => {
-    $(".profile-nav-menu").css("display", "none");
-    $(collapseDesktopMenu).removeClass("fa-close");
-    $(menu).removeClass("show-desktop-navbar");
+  $("#goto-desktop-navbar").click(() => {
+    $(".profile-nav-menu").toggle();
+    if (window.outerWidth < 768) $(".desktop-navbar").toggle();
   });
   window.addEventListener("resize", () => {
-    if (window.screen.width >= 768) $(menu).removeClass("show-desktop-navbar");
-    else if (window.screen.width <= 320)
+
+    if (window.outerWidth < 768) {
       $(collapseDesktopMenu).removeClass("fa-close");
+      $(menu).css("display", "none");
+    } 
+    if (window.outerWidth >= 768){
+      $(menu).css("display", "block");
+    }
   });
 
   $(".update-success").fadeOut(5000);

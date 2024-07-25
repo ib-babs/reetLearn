@@ -32,6 +32,10 @@ def register():
     password = data.get('password')
     if not username or not email or not password:
         return jsonify({"msg": "Missing username or email or password"}), 400
+    if 6 < len(username) > 30:
+        return jsonify({'msg': 'username length must be greater than 5 and less than 31'}), 400
+    if 8 < len(password) > 16:
+        return jsonify({'msg': 'password length must be greater than 7 and less than 17'}), 400
     new_user = User(**data)
     try:
         db.new(new_user)

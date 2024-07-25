@@ -26,7 +26,9 @@
       <p style="margin-bottom: 0; color: grey">{{g.course.description}}</p>
     </div>
   </div>
-
+{%if not g.lessons%}
+ <p><em>No lessons</em></p>
+{%endif%}
   {% if g.lessons%} {% for lesson in g.lessons %} {%if lesson.lesson%}
   <div class="lesson-container">
     {%if g.user_info.role == 'admin' %}
@@ -68,7 +70,6 @@
       <p class="lesson-detail-paragraph"></p>
     </div>
   </div>
-  
   <!-- Edit lesson -->
   <main class="edit-lesson-main" style='z-index: 1'>
     <div class="form-div">

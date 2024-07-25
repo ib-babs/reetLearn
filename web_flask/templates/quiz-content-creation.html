@@ -1,0 +1,89 @@
+{% include "layout.html" %} {% block content %}
+<link rel="stylesheet" href="../static/styles/create-course.css" />
+<main>
+  {%if g.res_status_code%} {%if g.res_status_code != 201%}
+  <div class="message-container" style="background-color: var(--danger)">
+    <p id="message">{{g.res_error}}</p>
+  </div>
+  {%else%}
+  <div class="message-container" style="background-color: var(--success)">
+    <p id="message">New quiz added.</p>
+  </div>
+  {%endif%} {%endif%}
+  <div class="form-div">
+    <h1 style="text-align: center;">Add Quiz Question</h1>
+    <form
+      action="{{url_for('add_quiz')}}"
+      method="post"
+      enctype="multipart/form-data"
+      id="course-form"
+    >
+    <!-- Quiz Concept -->
+      <div>
+        <label for="concept">Concept</label><br />
+        <input type="text" name="concept" id="lesson_name" required placeholder="e.g String"/><br />
+      </div>
+      <!-- Quiz Name refers to the table on database -->
+      <div>
+        <label for="quiz_name">Quiz Name</label><br />
+        <input type="text" name="quiz_name" id="lesson_name" required placeholder="Quiz name must ends with 'quiz'. e.g Python Quiz"/><br />
+      </div>
+      <!-- Question -->
+      <div>
+        <label for="question">Quiz Question</label><br />
+        <textarea
+          name="question"
+          id="lesson_detail"
+          rows="3"
+          required
+        ></textarea
+        ><br />
+      </div>
+      <!-- Answer -->
+      <div>
+        <label for="answer">Quiz Answer</label><br />
+        <textarea name="answer" id="lesson_detail" rows="3" required></textarea
+        ><br />
+      </div>
+      <!-- Wrong Answer 1 -->
+      <div>
+        <label for="wrong_answer1">Wrong Answer 1</label><br />
+        <textarea
+          name="wrong_answer1"
+          id="wrong_answer1"
+          rows="3"
+          required
+        ></textarea
+        ><br />
+      </div>
+      <!-- Wrong Answer 2 -->
+      <div>
+        <label for="wrong_answer2">Wrong Answer 2</label><br />
+        <textarea
+          name="wrong_answer2"
+          id="lesson_detail"
+          rows="3"
+          required
+        ></textarea
+        ><br />
+      </div>
+      <div>
+        <label for="question_number">Question Number</label><br />
+        <input
+          type="number"
+          name="question_number"
+          id="lesson_number"
+          required
+        /><br />
+      </div>
+      <button type="submit" name="add-quiz-submit">Create Quiz</button>
+    </form>
+  </div>
+</main>
+<script>
+  window.addEventListener("load", function () {
+    $("#message").fadeOut(3000);
+    $(".message-container").fadeOut(3000);
+  });
+</script>
+{% endblock content %} {% include "footer.html" %}

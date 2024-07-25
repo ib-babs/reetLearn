@@ -18,7 +18,6 @@
       href="../static/images/logo.png"
       type="image/x-icon"
     />
-  </head>
     <link
       rel="shortcut icon"
       href="../static/images/logo.png"
@@ -36,6 +35,8 @@
           name="user-name"
           id="user-name"
           required
+          minlength="6"
+          maxlength="30"
         />
         <label for="user-email">Email</label>
         <input
@@ -53,18 +54,20 @@
             name="user-password"
             id="user-password"
             required
+            minlength="8"
+            maxlength="16"
           />
           <span id="show-hide-password">Show</span>
         </div>
-        {% if g.res_ok != 200 %}
-        <span class="message">{{g.sign_up_error}}</span>
+        {% if g.res_status != 201 %}
+        <span class="message">{{g.res_error}}</span>
         {% endif %}
-        <input type="submit" class="sign-up-in" value="Sign Up" name='submit'/>
+        <input type="submit" class="sign-up-in" value="Sign Up" name="submit" />
       </form>
       <div id="or">
-        <hr noshade="noshade" />
+        <hr />
         <span>or </span>
-        <hr noshade="noshade" />
+        <hr />
       </div>
       <div class="auth">
         <button class="auth-btn-google">

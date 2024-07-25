@@ -43,7 +43,10 @@
         <ul id="parent-ul">
           {% if g.user_id %}
           <li class="auth-li">
-            <a href="{{url_for('course_page')}}"> Course </a>
+            <a href="{{url_for('course_page')}}"> Courses </a>
+          </li>
+          <li class="auth-li">
+            <a href="{{url_for('quizzes_page')}}">Quizzes</a>
           </li>
           {% if g.user_info.role == 'admin' %}
           <li class="auth-li">
@@ -51,6 +54,12 @@
           </li>
           <li class="auth-li">
             <a href="{{url_for('add_lesson')}}">Add lesson</a>
+          </li>
+          <li class="auth-li">
+            <a href="{{url_for('create_quiz')}}">Add quiz </a>
+          </li>
+          <li class="auth-li">
+            <a href="{{url_for('add_quiz')}}">Add quiz question</a>
           </li>
           {% endif %}
           <li class="auth-li">
@@ -61,7 +70,7 @@
               <i class="fa fa-user-circle"></i>
               <span id="user-name-nav"><b>{{g.user_info.username}}</b></span>
             </div>
-            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-chevron-right chevron-right"></i>
           </li>
           <li style="display: flex; text-align: center" class="auth-li">
             <a

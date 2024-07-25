@@ -43,13 +43,15 @@
           <span id="show-hide-password" style="top: 17px">Show</span>
         </div>
         <a href="#" id="forgotten-password">Forgotten Password?</a>
-        <span class="message"></span>
+        {% if g.res_status != 200 %}
+        <span class="message">{{g.res_error}}</span>
+        {% endif %}
         <input type="submit" class="sign-up-in" value="Log In" name='submit'/>
       </form>
       <div id="or">
-        <hr noshade="noshade" />
+        <hr/>
         <span>or </span>
-        <hr noshade="noshade" />
+        <hr/>
       </div>
       <div class="auth">
         <button class="auth-btn-google">

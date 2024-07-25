@@ -45,7 +45,9 @@ ul {
 button:hover,
 #upload-image-label:hover,
 #get-started:hover,
-#logout-link:hover, .login-btn:hover, .register-btn:hover {
+#logout-link:hover,
+.login-btn:hover,
+.register-btn:hover {
   background: #31b3b9;
   color: white;
 }
@@ -61,6 +63,7 @@ button:hover,
   position: sticky;
   top: 0;
   background-color: var(--bg);
+  user-select: none;
 }
 
 .header .nav-brand {
@@ -88,9 +91,6 @@ button:hover,
   font-size: 30px;
 }
 
-.desktop-navbar {
-  display: none;
-}
 .desktop-navbar ul li {
   display: flex;
 }
@@ -120,8 +120,66 @@ button:hover,
   padding-block: 10px;
   /* font-size: 1em; */
 }
+.profile-nav-menu {
+  display: block;
+  position: absolute;
+  top: 81px;
+  right: 0;
+  width: 270px;
+  background-color: inherit;
+  box-shadow: 0 1px 10px rgba(33, 33, 33, 0.3);
+  border-radius: 0 0 5px 5px;
+  border: 1px inherit solid;
+}
 
+@media screen and (320px <= width < 768px) {
+
+  .desktop-navbar {
+    display: none;
+  }
+  .desktop-navbar,
+  .profile-nav-menu {
+    position: absolute;
+    top: 81px;
+    right: 0;
+    width: 270px;
+    background-color: inherit;
+    box-shadow: 0 1px 10px rgba(33, 33, 33, 0.3);
+    border-radius: 0 0 5px 5px;
+    border: 1px inherit solid;
+  }
+
+  .desktop-navbar #parent-ul li {
+    padding-block: 8px;
+    padding-inline-start: 20px;
+    padding-inline-end: 40px;
+  }
+
+  .desktop-navbar #parent-ul #user-account-nav-item {
+    border-top: 1px var(--border-color) solid;
+    border-bottom: 1px var(--border-color) solid;
+    display: flex;
+    justify-content: space-between;
+    color: rgb(58, 50, 50);
+    gap: 10px;
+    align-items: center;
+    padding-block: 22px;
+    color: rgb(121, 116, 116);
+    padding-inline-end: 40px;
+  }
+  .desktop-navbar #child-ul {
+    display: flex;
+    gap: 5px;
+    padding: 0;
+  }
+}
 @media (width >= 768px) {
+  #logout-link{
+    display: none;
+  }
+  .desktop-navbar {
+    display: block;
+  }
   .header {
     padding: 5px;
     padding-inline: 10px;
@@ -170,49 +228,14 @@ button:hover,
   }
 }
 
-:not(.desktop-navbar, .header){
+:not(.desktop-navbar, .header, .profile-nav-menu) {
   z-index: 0;
 }
-.desktop-navbar, .header{
+.desktop-navbar,
+.header,
+.profile-nav-menu {
   z-index: 1;
 }
-.show-desktop-navbar,
-.profile-nav-menu {
-  display: block;
-  position: absolute;
-  top: 81px;
-  right: 0;
-  width: 270px;
-  background-color: inherit;
-  box-shadow: 0 1px 10px rgba(33, 33, 33, 0.3);
-  border-radius: 0 0 5px 5px;
-  border: 1px inherit solid;
-}
-
-.show-desktop-navbar #parent-ul li {
-  padding-block: 8px;
-  padding-inline-start: 20px;
-  padding-inline-end: 40px;
-}
-
-.show-desktop-navbar #parent-ul #user-account-nav-item {
-  border-top: 1px var(--border-color) solid;
-  border-bottom: 1px var(--border-color) solid;
-  display: flex;
-  justify-content: space-between;
-  color: rgb(58, 50, 50);
-  gap: 10px;
-  align-items: center;
-  padding-block: 22px;
-  color: rgb(121, 116, 116);
-  padding-inline-end: 40px;
-}
-.show-desktop-navbar #child-ul {
-  display: flex;
-  gap: 5px;
-  padding: 0;
-}
-
 
 .header .mobile-navbar i:active {
   transform: rotate(200rad);

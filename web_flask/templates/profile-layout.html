@@ -30,9 +30,6 @@
       </ul>
     </aside>
     <aside class="aside-detail">
-      <small class="update-success"
-        >{%if g.res_ok %}Update successfully{%else%} {{g.err}}{%endif%}</small
-      >
       <div id="information-detail">
         <p style="margin-block-end: 15px" class="aside-header">
           <i
@@ -75,6 +72,33 @@
               </p>
             </div>
           </div>
+          {%if g.res_status_code == 200 %}
+          <div
+            class="update-success"
+            style="
+              background-color: darkgreen;
+              text-align: center;
+              padding: 5px;
+              border-radius: 5px;
+              color: white;
+            "
+          >
+            <small> Account updated successfully!</small>
+          </div>
+          {%endif%} {%if g.err%}
+          <div
+            class="update-success"
+            style="
+              background-color: darkred;
+              text-align: center;
+              padding: 5px;
+              border-radius: 5px;
+              color: white;
+            "
+          >
+            <small> {{g.err}} </small>
+          </div>
+          {%endif%}
           <div>
             <label for="username"
               ><small><b>Username</b></small></label
@@ -111,9 +135,18 @@
             ><br />
             <div id="countries-container">
               <input type="text" name="country" id="country-input" hidden />
-              <input type="text" name="country-code" id="country-flag-input" hidden />
+              <input
+                type="text"
+                name="country-code"
+                id="country-flag-input"
+                hidden
+              />
               <div id="country-name">
-                <span id="country-flag" style="margin-right: 10px;" class="fi fi-{{user.country_code}}"></span>
+                <span
+                  id="country-flag"
+                  style="margin-right: 10px"
+                  class="fi fi-{{user.country_code}}"
+                ></span>
                 <span id="country-flag-name">{{user.country}}</span>
               </div>
               <div id="country" hidden></div>
@@ -163,10 +196,6 @@
             /><br />
             <small id="new-hide-password">Show</small>
           </div>
-          <small class="update-success"
-            >{%if g.res_ok %}Update successfully{%else%}
-            {{g.err}}{%endif%}</small
-          >
           <button type="submit" name="submit-password-btn">Change</button>
         </form>
       </div>

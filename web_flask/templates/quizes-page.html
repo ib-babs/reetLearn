@@ -17,36 +17,32 @@
 
 <div class="explore-courses">
   <div class="courses-cards">
-    <h1>Explore courses</h1>
+    <h1>Explore Quizzes</h1>
     <div class="courses">
-      {% if g.available_courses %} {% for course in g.available_courses %}
+      {% if g.available_quizes %} {% for quiz in g.available_quizes %}
       <div style="background-color: white" class="course-card-container">
         <a
-          href="{{url_for('lesson_page',course_name=course.course_name | lower)}}"
+          href="{{url_for('quiz_page',quiz_name=quiz.quiz_name)}}"
           style="text-decoration: none; color: inherit"
         >
-          <div class="course">
-            <img
-              src="{{course.course_image}}"
-              alt="course-image"
-              loading="lazy"
-            />
-            <div>
-              <h4>{{course.course_name}}</h4>
-              <p>{{course.description}}</p>
+        <div class="course">
+          <img src="{{quiz.quiz_image}}" alt="course-image" loading="lazy" />
+          <div>
+            <h4>{{quiz.quiz_name}}</h4>
+            <p>{{quiz.description}}</p>
 
-              {%if g.user_info.role == 'admin' %}
-              <nav class="course-options">
-                <a class="edit-link option-link">Edit</a>
-                <a
-                  class="option-link delete-lesson-link"
-                  href="{{url_for('delete_course', course_name=course.course_name)}}"
-                  >Delete</a
-                >
-              </nav>
-              {%endif%}
-            </div>
+            {%if g.user_info.role == 'admin' %}
+            <nav class="course-options">
+              <a class="edit-link option-link">Edit</a>
+              <a
+                class="option-link delete-lesson-link"
+                href="{{url_for('delete_quiz', quiz_name=quiz.quiz_name)}}"
+                >Delete</a
+              >
+            </nav>
+            {%endif%}
           </div>
+        </div>
         </a>
       </div>
       <main class="edit-delete-course-main">
@@ -56,10 +52,10 @@
               class="fa fa-arrow-circle-left"
               style="padding: 5px; font-size: 1.2em"
             ></i>
-            <h1>Edit Course</h1>
+            <h1>Edit Quiz</h1>
           </div>
           <form
-            action="{{url_for('edit_course', course_name=course.course_name, course_id=course.id)}}"
+            action="{{url_for('edit_quiz', quiz_name=quiz.quiz_name, quiz_id=quiz.id)}}"
             method="post"
             enctype="multipart/form-data"
             class="course-form"
@@ -67,25 +63,25 @@
             <div>
               <label for="description">Description</label><br />
               <textarea name="description" id="description" rows="8" required>
-{{course.description}}</textarea
+{{quiz.description}}</textarea
               ><br />
             </div>
             <div>
-              <label for="course-image">Course Image</label><br />
+              <label for="quiz_image">Quiz Image</label><br />
               <input
                 type="file"
-                name="course-image"
+                name="quiz_image"
                 id="course-image"
                 accept="image/png, jpg"
               /><br />
             </div>
-            <button type="submit" name="edit-course-submit">Save Change</button>
+            <button type="submit" name="edit-quiz-submit">Save Change</button>
           </form>
         </div>
       </main>
 
       {% endfor %} {%else%}
-      <p><em>No courses.</em></p>
+      <p><em>No quiz.</em></p>
       {% endif %}
     </div>
   </div>

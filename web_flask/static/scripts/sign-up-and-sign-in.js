@@ -1,4 +1,5 @@
 window.addEventListener("load", function () {
+  $('.message').fadeOut(2000);
   const showHidePassword = $("#show-hide-password");
   $(showHidePassword).click(function (e) {
     if ($(showHidePassword).text() == "Show") {

@@ -1,26 +1,25 @@
 window.addEventListener("load", () => {
-  if (window.screen.width < 620) {
+  if (window.outerWidth < 620) {
     $(".aside-detail").css("display", "none");
     $(".sidebar").css("display", "block");
   }
   window.addEventListener("resize", () => {
-    if (window.screen.width < 620) {
+    if (window.outerWidth < 620) {
       $(".aside-detail").css("display", "none");
       $(".sidebar").css("display", "block");
     }
-    if (window.screen.width >= 620) {
+    if (window.outerWidth >= 620) {
       $(".aside-detail").css("display", "block");
       $(".sidebar").css("display", "block");
     }
   });
-  $("#settings").click(() => {
-    showHideAsideDetail(
-      "#information-detail",
-      "#password-detail",
-      "#delete-account-detail"
-    );
-
-  });
+  // $("#settings").click(() => {
+  //   // showHideAsideDetail(
+  //   //   "#information-detail",
+  //   //   "#password-detail",
+  //   //   "#delete-account-detail"
+  //   // );
+  // });
   $("#profile-modal-visibility-btn").click(() => {
     $(".profile-modal").toggle();
   });
@@ -56,7 +55,7 @@ window.addEventListener("load", () => {
         $(val).addClass("aside-profile-item");
       });
     });
-    if (window.screen.width < 620) {
+    if (window.outerWidth < 620) {
       $(".aside-detail").css("display", "block");
       $(".sidebar").css("display", "none");
       $(".aside-header").click(() => {
@@ -64,7 +63,7 @@ window.addEventListener("load", () => {
         $(".aside-detail").css("display", "none");
       });
     }
-    if (window.screen.width >= 620) {
+    if (window.outerWidth >= 620) {
       $(".aside-detail").css("display", "block");
       $("#informatiosn-detail").removeAttr("hidden");
     }

@@ -6,6 +6,50 @@ main {
   background: #c6d4db3b;
   z-index: 1;
 }
+.quiz-div {
+  z-index: 2;
+}
+
+.quiz-cards button{
+  width: 100%;
+}
+.quiz-cards {
+  margin-top: 30px;
+  padding: 10px;
+  box-shadow: 0 0 5px 1px #2223;
+}
+
+.quiz-range{
+  accent-color: var(--btn);
+}
+.wrong-div-alert i{
+  color: #ff0044;
+}
+.checked-div-alert i{
+  color: #33ff00;
+}
+.checked-div-alert i, .wrong-div-alert i{
+  font-size: 4em;
+  background-color: white;
+  border-radius: 30%;
+  padding: 30px;
+}
+.checked-div-alert, .wrong-div-alert{
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-content: center;
+  background-color: #2222;
+}
+.answer {
+  margin-bottom: 10px;
+  background-color: transparent;
+  border: 1px solid var(--btn);
+  color: #222;
+}
+.quiz-question {
+  padding-block: 20px;
+}
 .lesson-detail-paragraph {
   white-space-collapse: preserve-breaks;
   text-justify: distribute-all-lines;

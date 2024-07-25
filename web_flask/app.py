@@ -10,6 +10,7 @@ import requests
 from PIL import Image
 import os
 from models.available_courses import AvailableCourses
+from models.available_quiz import AvailableQuizes
 from models.custom_course_table import Course
 from functools import wraps
 
@@ -66,12 +67,11 @@ def sign_up():
         })
         res = requests.post(f'{API_URL}/register',
                             data=data, headers={"Content-Type": "application/json"})
-        g.res_ok = res.status_code
+        g.res_status_code= res.status_code
         if res.status_code == 201:
             return redirect(url_for('sign_in'))
         else:
-            print(res.json().get('msg'))
-            g.sign_up_error = res.json().get('msg')
+            g.res_error = res.json().get('msg')
     return render_template('sign-up.html')
 
 
@@ -88,12 +88,13 @@ def sign_in():
         })
         res = requests.post(
             f'{API_URL}/login', json_data, headers={"Content-Type": "application/json"})
-        g.res_ok = res.status_code
-        print(g.res_ok)
+        g.res_status = res.status_code
         if res.status_code == 200:
             login_user(db.get(User, res.json().get('user').get('id')))
             session['token'] = res.json().get('access_token')
             return redirect(url_for('profile', user_id=current_user.id))
+        else:
+            g.res_error = res.json().get('msg')
     return render_template('sign-in.html')
 
 
@@ -184,12 +185,10 @@ def settings(user_id):
         res = requests.post(f'{API_URL}/user/{current_user.id}', data=json.dumps(data), headers={
             "Content-Type": "application/json", 'Authorization': f'Bearer {session.get("token")}'})
         # try:
+        g.res_status_code = res.status_code
         if res.status_code == 200:
-            g.res_ok = True
             g.user_info = res.json().get('user_info')
             return render_template('profile-layout.html', user=g.user_info)
-        else:
-            g.res_ok = False
 
     if request.method == 'POST' and 'submit-password-btn' in request.form:
         if 'current-password' in form and 'new-password' in form:
@@ -198,11 +197,10 @@ def settings(user_id):
                                                 'new-password': form.get('new-password')
                                                  }), headers={
                                     "Content-Type": "application/json", 'Authorization': f'Bearer {session.get("token")}'})
+            g.res_status_code = res.status_code
             if res.status_code == 200:
-                g.res_ok = True
                 return render_template('profile-layout.html', user=g.user_info)
             else:
-                g.res_ok = False
                 g.err = res.json().get('msg')
         return render_template('profile-layout.html', user=current_user)
 
@@ -345,6 +343,149 @@ def edit_lesson(course_name, lesson_id):
     return redirect(url_for('lesson_page', course_name=course_name))
 
 
+@app.route("/add-quiz", methods=['GET', 'POST'])
+@login_required
+@is_token_valid
+def create_quiz():
+    '''Add new quiz. Restricted to the admin'''
+    if current_user.role != 'admin':
+        return redirect(url_for('course_page'))
+    if request.method == 'POST' and 'submit-new-quiz' in request.form:
+        form = request.form
+        data = {}
+        data['quiz_name'] = form.get('quiz_name')
+        data['description'] = form.get('description')
+        if not db._DB__session.query(AvailableQuizes).filter(AvailableQuizes.quiz_name == form.get('quiz_name')).first():
+            image = request.files.get('quiz_image')
+            if image and image.filename:
+                try:
+                    path = Path(
+                        f'{os.getcwd()}/web_flask/static/quiz-images/{form.get("quiz_name").replace(" ", "_")}')
+                    if path.exists():
+                        shutil.rmtree(path)
+                    data['quiz_image'] = f'../static/quiz-images/{form.get("quiz_name").replace(" ", "_")}/{image.filename}'
+                    path.mkdir(mode=511, exist_ok=True)
+                    img = Image.open(BytesIO(image.read()))
+                    img.thumbnail((600, 600))
+                    img.save(path.joinpath(image.filename))
+                except Exception as e:
+                    print(e)
+        try:
+            res = requests.post(f'{API_URL}/new-quiz', data=json.dumps(data), headers={'Content-Type': 'application/json',\
+                                                                                    'Authorization': f'Bearer {session.get("token")}'})
+            g.res_status_code = res.status_code
+            if res.status_code != 201:
+                g.res_error = res.json().get('msg')
+        except Exception as e:
+            g.res_error = e.args[0]
+    return render_template('create-quiz.html')
+
+
+@app.route("/quizzes", methods=['GET', 'POST'])
+@login_required
+@is_token_valid
+def quizzes_page():
+    try:
+        res = requests.get(f'{API_URL}/available-quizes')
+        g.available_quizes = res.json()
+    except Exception as e:
+        pass
+    return render_template('quizes-page.html')
+
+
+@app.route('/edit-quiz/<quiz_name>/<quiz_id>', methods=['PUT', 'POST', 'GET'])
+@login_required
+@is_token_valid
+def edit_quiz(quiz_name, quiz_id):
+    '''Edit a course description and image if available'''
+    form = request.form
+    if request.method == 'POST' and 'edit-quiz-submit' in form:
+        data = {'description': form.get('description')}
+        image = request.files.get('quiz_image')
+        if image and image.filename:
+            try:
+                    path = Path(
+                        f'{os.getcwd()}/web_flask/static/quiz-images/{quiz_name.replace(" ", "_")}')
+                    if path.exists():
+                        shutil.rmtree(path)
+                        data[
+                            'quiz_image'] = f'../static/quiz-images/{quiz_name.replace(" ", "_")}/{image.filename}'
+                    path.mkdir(mode=511, exist_ok=True)
+                    img = Image.open(BytesIO(image.read()))
+                    img.thumbnail((600, 600))
+                    img.save(path.joinpath(image.filename))
+            except Exception as e:
+                    print(e)
+        res = requests.put(f'{API_URL}/available-quiz/{quiz_id}',
+                           data=json.dumps(data), headers={
+                               'Content-Type': 'application/json',
+                               'Authorization': f'Bearer {session.get("token")}'
+                           })
+        g.res_status = res.status_code
+        if res.status_code != 200:
+            g.res_error = res.json().get('msg')
+    return redirect(url_for('quizzes_page'))
+
+@app.route('/delete-quiz/<quiz_name>', methods=['GET', 'DELETE'])
+@login_required
+@is_token_valid
+def delete_quiz(quiz_name):
+    """Delete quiz. This drop the quiz table from the database"""
+    res = requests.delete(f'{API_URL}/delete-quiz/{quiz_name}', headers={'Authorization': f'Bearer {session.get("token")}'})
+    g.res_status_code = res.status_code
+    if res.status_code != 410:
+            g.res_error = res.json().get('msg')
+    if res.status_code == 410:
+        path = Path(f'{os.getcwd()}/web_flask/static/quiz-images/{quiz_name.replace(" ", "_")}')
+        if path.exists():
+            shutil.rmtree(path)
+    return redirect(url_for('quizzes_page'))
+    
+@app.route('/new-quiz', methods=['GET', 'POST'])
+@login_required
+@is_token_valid
+def add_quiz():
+    if current_user.role == 'user':
+        return redirect(url_for('quizzes_page'))
+    form = request.form
+    if request.method == 'POST' and 'add-quiz-submit' in form:
+        quiz_name = form.get('quiz_name')
+        try:
+            res = requests.post(f'{API_URL}/quiz/{quiz_name}',
+                            data=json.dumps(form), headers={'Content-Type': 'application/json',
+                                                            'Authorization': f'Bearer {session.get("token")}'})
+            g.res_status_code = res.status_code
+        except Exception as e:
+            print(res.content)
+        # if res.status_code != 201:
+        #     g.res_error = res.json().get('msg')
+    return render_template('quiz-content-creation.html')
+
+
+@app.route("/quiz/<quiz_name>", methods=['GET', 'POST'])
+@login_required
+@is_token_valid
+def quiz_page(quiz_name):
+    print(quiz_name)
+    g.quiz_table = db._DB__session.query(AvailableQuizes).filter(
+        AvailableQuizes.quiz_name == quiz_name).first()
+    if not g.quiz_table:
+        return redirect(url_for('quizzes_page'))
+    try:
+        res = requests.get(
+        f'{API_URL}/quiz-table/{quiz_name}', headers={"Authorization": f"Bearer {session.get('token')}"})
+        if res.status_code == 200:
+            g.quizzes = res.json().get('quizzes')
+            g.concepts = res.json().get('concepts')
+            g.quiz_name = str(quiz_name).capitalize()
+        else:
+            g.res_error = res.json().get('msg')
+    except Exception as e:
+        pass
+
+    return render_template('quiz-page.html')
+
+
 @app.get('/landing-page')
 def landing_page():
     if current_user.is_authenticated:
@@ -371,4 +512,4 @@ def unauthorized_user():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

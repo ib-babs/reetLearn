@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 """Quiz Table module"""
-from sqlalchemy import Column, TEXT
+from sqlalchemy import Column, TEXT, Integer, JSON, String
 from models import base_model, DB
-
 
 def Quiz(class_name):
     """Procedure for creating new quiz table"""
     class_dict = {"__tablename__": str(class_name).lower(),
+                  'concept': Column(String(900), nullable=False),
                   "question": Column(TEXT, nullable=False),
+                  "question_number": Column(Integer, nullable=False),
                   "answer": Column(TEXT, nullable=False),
                   "wrong_answer1": Column(TEXT, nullable=False),
                   "wrong_answer2": Column(TEXT, nullable=False),

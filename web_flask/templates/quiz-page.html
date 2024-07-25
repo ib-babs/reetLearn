@@ -1,0 +1,110 @@
+{% include "layout.html" %} {% block content %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{url_for('static', filename='styles/create-course.css')}}"
+/>
+<link rel="stylesheet" href="../static/styles/lesson-page.css" />
+{%if g.res_status_code%} {%if g.res_status_code != 200%}
+<div class="message-container" style="background-color: var(--danger)">
+  <p id="message">{{g.res_error}}</p>
+</div>
+{%else%}
+<div class="message-container" style="background-color: var(--success)">
+  <p id="message">Quiz updated!</p>
+</div>
+{%endif%} {%endif%}
+
+<main style="display: flex; flex-direction: column">
+  {%if g.quiz_table%}
+  <div class="course-desc">
+    <img src="{{g.quiz_table.quiz_image}}" alt="quiz-image" loading="lazy" />
+    <div>
+      <p style="font-size: 2em; margin-block: 0; font-weight: bold">
+        {{g.quiz_table.quiz_name}}
+      </p>
+      <p style="margin-bottom: 0; color: grey">{{g.quiz_table.description}}</p>
+    </div>
+  </div>
+  {%if not g.quizzes%}
+  <p><em>No quiz.</em></p>
+  {%endif%} {% if g.concepts%} {% for concept in g.concepts %}
+  <div class="lesson-container">
+    {%if g.user_info.role == 'admin' %}
+    <nav class="lesson-options">
+      <a class="option-link edit-lesson-link">Edit</a>
+      <a
+        class="option-link delete-lesson-link"
+        href="url_for('delete_lesson', quiz_name=g.quiz_table.quiz_name, lesson_id=lesson.id)"
+        >Delete</a
+      >
+    </nav>
+    <i class="fa fa-ellipsis-v"></i>
+    {%endif%}
+    <div class="lesson-cards" style="font-size: 1.5em; cursor: pointer">
+      <div class="lesson-list">
+        <i class="fa fa-far fa-question-circle" style="color: var(--btn)"></i>
+        <div>
+          <p class="lesson">{{concept}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Quiz -->
+  <div class="lesson-div quiz-div" hidden>
+    <div class="inner-lesson-div inner-quiz-div">
+      <div
+      style="display: flex; justify-content: space-between;align-items: baseline" class="quiz-header">
+     
+     <div style="display: flex;gap: 30px; align-items: baseline">
+       <i
+       class="fa fa-arrow-circle-left hide-lesson-div"
+       style="font-size: 1.2em;"
+       ></i>
+       <h2>{{concept}}</h2>
+     </div>
+
+<div style="justify-self: right;" class="lives-div">
+  <i class="fa fa-heart" style="color: red;"></i>
+  <span class="lives"></span>
+  <span style="outline: 1px solid var(--btn); border-radius: 100%; outline-offset: 5px; margin-inline-start: 15px;" class="quiz-length"></span>
+</div>
+    </div>
+    <input type="range" name="range" class="quiz-range" value="0">
+    {% for quiz in g.quizzes %} {% if quiz.concept == concept%}
+      <div class="quiz-cards" hidden>
+        <p class="quiz-question">{{quiz.question}}</p>
+        <div class="answers">
+          <p class="correct-answer" hidden>{{quiz.answer}}</p>
+          <button class="answer">{{quiz.answer}}</button>
+          <button class="answer">{{quiz.wrong_answer1}}</button>
+          <button class="answer">{{quiz.wrong_answer2}}</button>
+        </div>
+      </div>
+      {% endif %} {% endfor %}
+    </div>
+
+    <!-- End -->
+    <!-- Edit lesson -->
+    
+    {% endfor %} {% endif %}
+    <!-- Correct answer -->
+    <div class="checked-div-alert" hidden>
+      <div>
+        <i class="fas fa-check-circle"></i>
+      </div>
+    </div>
+    <!-- Wrong answer -->
+    <div class="wrong-div-alert" hidden>
+      <div>
+        <i class="fa fas fa-times-circle"></i>
+      </div>
+    </div>
+  </div>
+    
+  <script
+    async
+    src="{{url_for('static', filename='scripts/quiz-page.js')}}"
+  ></script>
+</main>
+{%endif%} {% endblock content %} {% include "footer.html" %}

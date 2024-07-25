@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Course Table module"""
-from sqlalchemy import Column, String, TEXT, Integer, BLOB
+from sqlalchemy import Column, String, TEXT, Integer
 from models import base_model, DB
 from sqlalchemy.engine import reflection
 
