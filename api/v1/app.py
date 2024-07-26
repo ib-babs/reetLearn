@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from datetime import datetime
+
 from api.v1.views import app_views
 from flask import Flask, make_response, jsonify, request
 from models import db
