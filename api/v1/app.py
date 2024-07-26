@@ -5,7 +5,7 @@ from api.v1.views import app_views
 from flask import Flask, make_response, jsonify, request
 from models import db
 from os import environ
-from flask_jwt_extended import get_jwt_identity, jwt_required, JWTManager, decode_token
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
@@ -36,4 +36,4 @@ def not_found(error):
 
 if __name__ == "__main__":
     """ Main Function """
-    app.run(debug=True, port=5001)
+    app.run()

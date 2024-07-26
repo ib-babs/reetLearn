@@ -1,6 +1,8 @@
 flask
 flask-cors
 flask-login
+flask-mail
+'itsdangerous==2.0.1'
 flask-jwt-extended
 pillow
 bcrypt

@@ -42,7 +42,7 @@
           />
           <span id="show-hide-password" style="top: 17px">Show</span>
         </div>
-        <a href="#" id="forgotten-password">Forgotten Password?</a>
+        <a href="{{url_for('reset_request')}}" id="forgotten-password">Forgotten Password?</a>
         {% if g.res_status != 200 %}
         <span class="message">{{g.res_error}}</span>
         {% endif %}

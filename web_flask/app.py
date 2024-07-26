@@ -2,8 +2,7 @@
 import base64
 from io import BytesIO
 import json
-from pathlib import Path
-import shutil
+import bcrypt
 from flask import Flask, render_template, url_for, request, redirect, g, session
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import db, User
@@ -16,11 +15,9 @@ from models.custom_course_table import Course
 from functools import wraps
 from flask_mail import Mail, Message
 
-
-
 def send_reset_email(user):
     '''Send reset email message'''
-    token = user.get_reset_token()
+    token = user.get_reset_token(app)
     msg = Message('Password Reset Request', sender=os.getenv('EMAIL_USER'), recipients=[
                   user.email])
     msg.body = f'''To reset your password, visit the following link:
@@ -43,7 +40,8 @@ login_manager = LoginManager(app)
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = os.getenv(
     'WEB_FLASK_SECRET_KEY', "bbc021c9a7c47d437e2a6083906cc20753f401ccb524bdaf499cd432b3ca64a0'")
-API_URL = os.getenv('API_URL', 'http://localhost:5001/api/v1')
+API_URL = os.getenv('API_URL')
+
 # Mail Manager
 mail = Mail(app)
 def save_image_to_db(image_file=None):
@@ -258,19 +256,9 @@ def create_course():
             image = request.files.get('course-image')
             if image and image.filename:
                 try:
-                    path = Path(
-                        f'{os.getcwd()}/web_flask/static/courses-image/{course_name.replace(" ", "_")}')
-                    if path.exists():
-                        shutil.rmtree(path)
-                        data[
-                            'course-image'] = f'../static/courses-image/{course_name.replace(" ", "_")}/{image.filename}'
-                    path.mkdir(mode=511, exist_ok=True)
-                    img = Image.open(BytesIO(image.read()))
-                    img.thumbnail((600, 600))
-                    img.save(path.joinpath(image.filename))
-
+                    data['image'] = save_image_to_db(image_file=image)[0]
                 except Exception as e:
-                    print(e)
+                    pass
         res = requests.post(f'{API_URL}/new-course',
                             data=json.dumps(data), headers={'Content-Type': 'application/json',
                                                             'Authorization': f'Bearer {session.get("token")}'})
@@ -291,16 +279,8 @@ def edit_course(course_name, course_id):
         image = request.files.get('course-image')
         if image and image.filename:
             try:
-                    path = Path(
-                        f'{os.getcwd()}/web_flask/static/courses-image/{course_name.replace(" ", "_")}')
-                    if path.exists():
-                        shutil.rmtree(path)
-                        data[
-                            'course-image'] = f'../static/courses-image/{course_name.replace(" ", "_")}/{image.filename}'
-                    path.mkdir(mode=511, exist_ok=True)
-                    img = Image.open(BytesIO(image.read()))
-                    img.thumbnail((600, 600))
-                    img.save(path.joinpath(image.filename))
+                data['image'] = save_image_to_db(image_file=image)[0]
+
             except Exception as e:
                     print(e)
         res = requests.put(f'{API_URL}/available-course/{course_id}',
@@ -322,10 +302,6 @@ def delete_course(course_name):
     g.res_status_code = res.status_code
     if res.status_code != 410:
             g.res_error = res.json().get('msg')
-    if res.status_code == 410:
-        path = Path(f'{os.getcwd()}/web_flask/static/courses-image/{course_name.replace(" ", "_")}')
-        if path.exists():
-            shutil.rmtree(path)
     return redirect(url_for('course_page'))
     
 
@@ -383,17 +359,9 @@ def create_quiz():
             image = request.files.get('quiz_image')
             if image and image.filename:
                 try:
-                    path = Path(
-                        f'{os.getcwd()}/web_flask/static/quiz-images/{form.get("quiz_name").replace(" ", "_")}')
-                    if path.exists():
-                        shutil.rmtree(path)
-                    data['quiz_image'] = f'../static/quiz-images/{form.get("quiz_name").replace(" ", "_")}/{image.filename}'
-                    path.mkdir(mode=511, exist_ok=True)
-                    img = Image.open(BytesIO(image.read()))
-                    img.thumbnail((600, 600))
-                    img.save(path.joinpath(image.filename))
+                    data['quiz_image'] = save_image_to_db(image)[0]
                 except Exception as e:
-                    print(e)
+                    pass
         try:
             res = requests.post(f'{API_URL}/new-quiz', data=json.dumps(data), headers={'Content-Type': 'application/json',\
                                                                                     'Authorization': f'Bearer {session.get("token")}'})
@@ -428,16 +396,7 @@ def edit_quiz(quiz_name, quiz_id):
         image = request.files.get('quiz_image')
         if image and image.filename:
             try:
-                    path = Path(
-                        f'{os.getcwd()}/web_flask/static/quiz-images/{quiz_name.replace(" ", "_")}')
-                    if path.exists():
-                        shutil.rmtree(path)
-                        data[
-                            'quiz_image'] = f'../static/quiz-images/{quiz_name.replace(" ", "_")}/{image.filename}'
-                    path.mkdir(mode=511, exist_ok=True)
-                    img = Image.open(BytesIO(image.read()))
-                    img.thumbnail((600, 600))
-                    img.save(path.joinpath(image.filename))
+                data['quiz_image'] =save_image_to_db(image)
             except Exception as e:
                     print(e)
         res = requests.put(f'{API_URL}/available-quiz/{quiz_id}',
@@ -459,10 +418,6 @@ def delete_quiz(quiz_name):
     g.res_status_code = res.status_code
     if res.status_code != 410:
             g.res_error = res.json().get('msg')
-    if res.status_code == 410:
-        path = Path(f'{os.getcwd()}/web_flask/static/quiz-images/{quiz_name.replace(" ", "_")}')
-        if path.exists():
-            shutil.rmtree(path)
     return redirect(url_for('quizzes_page'))
     
 @app.route('/new-quiz', methods=['GET', 'POST'])
@@ -480,9 +435,7 @@ def add_quiz():
                                                             'Authorization': f'Bearer {session.get("token")}'})
             g.res_status_code = res.status_code
         except Exception as e:
-            print(res.content)
-        # if res.status_code != 201:
-        #     g.res_error = res.json().get('msg')
+            pass
     return render_template('quiz-content-creation.html')
 
 
@@ -490,7 +443,6 @@ def add_quiz():
 @login_required
 @is_token_valid
 def quiz_page(quiz_name):
-    print(quiz_name)
     g.quiz_table = db._DB__session.query(AvailableQuizes).filter(
         AvailableQuizes.quiz_name == quiz_name).first()
     if not g.quiz_table:
@@ -508,6 +460,41 @@ def quiz_page(quiz_name):
         pass
 
     return render_template('quiz-page.html')
+
+@app.route('/request-password-reset', methods=['POST', 'GET'])
+def reset_request():
+    '''Request password reset'''
+    if current_user.is_authenticated:
+        return redirect(url_for('new_feed'))
+    form = request.form
+    if request.method == 'POST' and 'request-reset-btn' in form:
+        user = db._DB__session.query(User).filter(User.email == form.get('email')).first()
+        if user:
+            g.msg = 'An email has been sent with the instructions to reset your password'
+            send_reset_email(user)
+            return redirect(url_for('sign_in'))
+        else:
+            g.msg = 'Email is invalid!'
+    return render_template('reset_request.html')
+
+
+@app.route('/reset-password/<token>', methods=['POST', 'GET'])
+def reset_token(token):
+    '''Request password reset'''
+    if current_user.is_authenticated:
+        return redirect(url_for('profile'))
+    form = request.form
+    user = User.verify_reset_token(db, User, app, token)
+    if user is None:
+        g.msg='That is an invalid or expired token'
+        return redirect(url_for('request_reset'))
+    if request.method == 'POST' and 'reset-password-tk-btn' in form:
+        user.password = bcrypt.hashpw(str(form.get('password')).encode(), bcrypt.gensalt())
+        g.msg = 'Password has been changed successfully!'
+        db.save()
+        return redirect(url_for('sign_in'))
+
+    return render_template('reset_password.html',token=token)
 
 
 @app.get('/landing-page')
@@ -536,4 +523,4 @@ def unauthorized_user():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
