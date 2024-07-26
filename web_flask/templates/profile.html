@@ -2,6 +2,7 @@
 <style>
   body {
     background: var(--bg);
+    min-height: 100vh;
   }
   .header {
     position: unset;
@@ -12,7 +13,6 @@
     padding-block: 70px;
   }
   .profile-div {
-    min-height: 100vh;
     background-color: var(--bg-dark);
     padding: 45px;
     padding-block: 100px;
@@ -36,6 +36,7 @@
     }
   }
 </style>
+<main>
 <div class="profile-div">
   <img 
   src="{%if g.user_info.image%} data:image/*;base64,{{g.user_info.image}}{%else%} ../static/images/logo.png {%endif%}"
@@ -50,4 +51,5 @@
     <p><span class='fi fi-{{g.user_info.country_code}}' style='margin-right: 10px'></span> {{g.user_info.country}}</p>
   </div>
 </div>
+</main>
 {% endblock content %} {% include "footer.html" %}
