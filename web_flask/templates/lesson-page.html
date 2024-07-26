@@ -18,7 +18,9 @@
 <main style="display: flex; flex-direction: column;">
   {%if g.course%}
   <div class="course-desc">
-    <img src="{{g.course.course_image}}" alt="course-image" loading="lazy" />
+    <img 
+    src="{%if g.course.course_image%} data:image/*;base64,{{g.course.course_image}}{%else%} ../static/images/logo.png {%endif%}" alt="{{course-image}}"
+     alt="course-image" loading="lazy" />
     <div>
       <p style="font-size: 2em; margin-block: 0; font-weight: bold">
         {{g.course.course_name}}

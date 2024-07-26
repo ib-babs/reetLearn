@@ -18,7 +18,10 @@
 <main style="display: flex; flex-direction: column">
   {%if g.quiz_table%}
   <div class="course-desc">
-    <img src="{{g.quiz_table.quiz_image}}" alt="quiz-image" loading="lazy" />
+    <img     
+    src="{%if g.quiz_table.quiz_image%} data:image/*;base64,{{g.quiz_table.quiz_image}}{%else%} ../static/images/logo.png {%endif%}" alt="{{quiz-image}}"
+
+    alt="quiz-image" loading="lazy" />
     <div>
       <p style="font-size: 2em; margin-block: 0; font-weight: bold">
         {{g.quiz_table.quiz_name}}

@@ -109,8 +109,10 @@
             <div style="display: flex; gap: 4px; align-items: baseline">
               <i class="fa fa-user-circle"></i>
               <div>
-                <p style="margin: 3px"><b>{{g.user_info.username}}</b></p>
-                <p style="color: grey; margin: 3px">Go to profile</p>
+                <a href="{{url_for('profile', user_id=g.user_id)}}"> 
+                  <p style="margin: 3px"><b>{{g.user_info.username}}</b></p>
+                  <p style="color: grey; margin: 3px">Go to profile</p>
+                </a>
               </div>
             </div>
           </li>
