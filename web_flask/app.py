@@ -200,10 +200,8 @@ def settings(user_id):
         if image and image.filename:
             try:
                 data['image'] = save_image_to_db(image_file=image)[0]
-                # print(save_image_to_db(image_file=image)[0])
-
             except Exception as e:
-                print(e)
+                pass
         res = requests.post(f'{API_URL}/user/{current_user.id}', data=json.dumps(data), headers={
             "Content-Type": "application/json", 'Authorization': f'Bearer {session.get("token")}'})
         # try:
