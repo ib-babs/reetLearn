@@ -40,7 +40,7 @@ login_manager = LoginManager(app)
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = os.getenv(
     'WEB_FLASK_SECRET_KEY', "bbc021c9a7c47d437e2a6083906cc20753f401ccb524bdaf499cd432b3ca64a0'")
-API_URL = os.getenv('API_URL', 'http://localhost:5001/api/v1')
+API_URL = os.getenv('API_URL')
 
 # Mail Manager
 mail = Mail(app)
