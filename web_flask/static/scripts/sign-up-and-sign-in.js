@@ -38,4 +38,8 @@ window.addEventListener("load", function () {
   //   });
   // });
 
+
+  $('.auth-btn-facebook, .auth-btn-apple, .auth-btn-google').click(()=>{
+    alert('Coming soon...')
+  })
 });
