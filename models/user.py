@@ -30,9 +30,10 @@ class User(BaseModel, Base, DB, UserMixin):
         if name == "password":
             value = hashpw(str(value).encode(), gensalt())
         super().__setattr__(name, value)
+
     def get_reset_token(self, app, expire_sec=1800):
             '''Get the reset token. Expires in thirty minutes'''
-            s = Serializer(app.config.get('SECRET_KEY'), expires_in=expire_sec)
+            s = Serializer(app.config['SECRET_KEY'], expires_in=expire_sec)
             return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod
