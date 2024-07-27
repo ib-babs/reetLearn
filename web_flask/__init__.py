@@ -14,33 +14,7 @@ from PIL import Image
 from models import db, User
 from flask_mail import Mail, Message
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-
-
-app = Flask(__name__)
-def send_reset_email(user):
-    '''Send reset email message'''
-    token = user.get_reset_token(app)
-    msg = Message('Password Reset Request', sender=environ.get('EMAIL_USER'), recipients=[
-                  user.email])
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
-Ignore the message if you don't request for password reset and no change will be made!'''
-    mail.send(msg)
-    return 'Email is sent successfully!'
-
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587  # or 465 for SSL
-app.config['MAIL_USE_TLS'] = True  # or False for SSL
-app.config['MAIL_USERNAME'] = environ.get('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = environ.get('EMAIL_PASS')
-app.config['SECRET_KEY'] = environ.get('WEB_FLASK_SECRET_KEY')
-login_manager = LoginManager(app)
-login_manager.init_app(app)
 API_URL = environ.get('API_URL')
-
-# Mail Manager
-mail = Mail(app)
-
 
 def save_image_to_db(image_file=None):
     '''Resize image before saving it to the database'''
