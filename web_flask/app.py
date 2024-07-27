@@ -2,13 +2,6 @@
 '''app.py'''
 from web_flask import *
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587  # or 465 for SSL
-app.config['MAIL_USE_TLS'] = True  # or False for SSL
-app.config['MAIL_USERNAME'] = os.getenv('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASS')
-app.config['SECRET_KEY'] = os.getenv('WEB_FLASK_SECRET_KEY')
-
 @login_manager.user_loader
 def load_user(user_id):
     user = db.get(User, user_id)

@@ -20,8 +20,6 @@ def close_db(error):
     db.close()
 
 
-
-
 @app.errorhandler(404)
 def not_found(error):
     """ 404 Error
