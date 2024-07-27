@@ -17,19 +17,14 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 
 app = Flask(__name__)
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587  # or 465 for SSL
-app.config['MAIL_USE_TLS'] = True  # or False for SSL
-app.config['MAIL_USERNAME'] = os.getenv('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASS')
 login_manager = LoginManager(app)
 login_manager.init_app(app)
-app.config['SECRET_KEY'] = os.getenv(
-    'WEB_FLASK_SECRET_KEY', "bbc021c9a7c47d437e2a6083906cc20753f401ccb524bdaf499cd432b3ca64a0'")
-API_URL = os.getenv('API_URL', 'http://localhost:5001/api/v1')
+API_URL = os.getenv('API_URL')
 
 # Mail Manager
 mail = Mail(app)
+
+
 def save_image_to_db(image_file=None):
     '''Resize image before saving it to the database'''
     img = Image.open(BytesIO(image_file.read()))
@@ -38,6 +33,7 @@ def save_image_to_db(image_file=None):
     buffered = BytesIO()
     img.save(buffered, format=f'{image_fmt}')
     return (base64.b64encode(buffered.getvalue()).decode('utf-8'), image_fmt)
+
 
 def send_reset_email(user):
     '''Send reset email message'''
@@ -50,6 +46,7 @@ Ignore the message if you don't request for password reset and no change will be
     mail.send(msg)
     return 'Email is sent successfully!'
 
+
 def is_token_valid(func):
     '''Checking access token for the api endpoints'''
     @wraps(func)
@@ -57,7 +54,7 @@ def is_token_valid(func):
         '''Validating token'''
         if current_user.is_authenticated:
             res = requests.get(f'{API_URL}/check_token_status',
-                           headers={'Authorization': f'Bearer {session.get("token")}'})
+                               headers={'Authorization': f'Bearer {session.get("token")}'})
             if res.status_code == 401:
                 session.clear()
                 g.user_info = None
