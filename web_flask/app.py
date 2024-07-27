@@ -1,56 +1,7 @@
 #!/usr/bin/env python3
-import base64
-from io import BytesIO
-import json
-import bcrypt
-from flask import Flask, render_template, url_for, request, redirect, g, session
-from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-from models import db, User
-import requests
-from PIL import Image
-import os
-from models.available_courses import AvailableCourses
-from models.available_quiz import AvailableQuizes
-from models.custom_course_table import Course
-from functools import wraps
-from flask_mail import Mail, Message
+'''app.py'''
+from web_flask import *
 
-def send_reset_email(user):
-    '''Send reset email message'''
-    token = user.get_reset_token(app)
-    msg = Message('Password Reset Request', sender=os.getenv('EMAIL_USER'), recipients=[
-                  user.email])
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
-Ignore the message if you don't request for password reset and no change will be made!'''
-    mail.send(msg)
-    return 'Email is sent successfully!'
-
-
-
-
-
-app = Flask(__name__)
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587  # or 465 for SSL
-app.config['MAIL_USE_TLS'] = True  # or False for SSL
-app.config['MAIL_USERNAME'] = os.getenv('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASS')
-login_manager = LoginManager(app)
-login_manager.init_app(app)
-app.config['SECRET_KEY'] = os.getenv(
-    'WEB_FLASK_SECRET_KEY', "bbc021c9a7c47d437e2a6083906cc20753f401ccb524bdaf499cd432b3ca64a0'")
-API_URL = os.getenv('API_URL')
-
-# Mail Manager
-mail = Mail(app)
-def save_image_to_db(image_file=None):
-    img = Image.open(BytesIO(image_file.read()))
-    img.thumbnail((300, 300))
-    image_fmt = img.format.lower()
-    buffered = BytesIO()
-    img.save(buffered, format=f'{image_fmt}')
-    return (base64.b64encode(buffered.getvalue()).decode('utf-8'), image_fmt)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -60,25 +11,6 @@ def load_user(user_id):
         g.user_info = user.to_dict()
         return user
     return None
-
-def is_token_valid(func):
-    '''Checking access token for the api endpoints'''
-    @wraps(func)
-    def validate_user_token(*args, **kwargs):
-        '''Validating token'''
-        if current_user.is_authenticated:
-            res = requests.get(f'{API_URL}/check_token_status',
-                           headers={'Authorization': f'Bearer {session.get("token")}'})
-            if res.status_code == 401:
-                session.clear()
-                g.user_info = None
-                g.user_id = None
-                logout_user()
-                return render_template('expired_token.html')
-            if res.status_code == 200:
-                return func(*args, **kwargs)
-    return validate_user_token
-
 
 
 @app.route("/sign-up", methods=['GET', 'POST'])
@@ -97,7 +29,7 @@ def sign_up():
         })
         res = requests.post(f'{API_URL}/register',
                             data=data, headers={"Content-Type": "application/json"})
-        g.res_status_code= res.status_code
+        g.res_status_code = res.status_code
         if res.status_code == 201:
             return redirect(url_for('sign_in'))
         else:
@@ -133,50 +65,6 @@ def sign_in():
 @is_token_valid
 def profile(user_id):
     return render_template('profile.html')
-
-
-@app.route("/courses", methods=['GET', 'POST'])
-@login_required
-@is_token_valid
-def course_page():
-    res = requests.get(f'{API_URL}/available-courses')
-    try:
-        g.available_courses = res.json()
-    except Exception as e:
-        pass
-    return render_template('courses-page.html')
-
-
-@app.route("/learn/<course_name>", methods=['GET', 'POST'])
-@login_required
-@is_token_valid
-def lesson_page(course_name):
-    g.course = db._DB__session.query(AvailableCourses).filter(
-        AvailableCourses.course_name == course_name).first()
-    if not g.course:
-        return redirect(url_for('course_page'))
-    res = requests.get(
-        f'{API_URL}/course-table/{course_name}', headers={"Authorization": f"Bearer {session.get('token')}"})
-    try:
-        g.lessons = res.json()
-        g.corse_name = str(course_name).capitalize()
-    except Exception as e:
-        pass
-
-    return render_template('lesson-page.html')
-
-
-@app.route('/delete-lesson/<course_name>/<lesson_id>', methods=['GET', 'DELETE'])
-@login_required
-def delete_lesson(course_name, lesson_id):
-    if current_user.role == 'user':
-        return redirect(url_for('course_page'))
-    res = requests.delete(
-        f'{API_URL}//lesson/{course_name}/{lesson_id}',
-        headers={"Authorization": f"Bearer {session.get('token')}"})
-    if res.status_code != 410:
-        g.res_error = res.json().get('msg')
-    return redirect(url_for('lesson_page', course_name=course_name))
 
 
 @app.route("/settings/<user_id>", methods=['GET', 'POST', 'PUT', 'DELETE'])
@@ -234,6 +122,50 @@ def settings(user_id):
     return render_template('profile-layout.html', user=current_user)
 
 
+@app.route("/courses", methods=['GET', 'POST'])
+@login_required
+@is_token_valid
+def course_page():
+    res = requests.get(f'{API_URL}/available-courses')
+    try:
+        g.available_courses = res.json()
+    except Exception as e:
+        pass
+    return render_template('courses-page.html')
+
+
+@app.route("/learn/<course_name>", methods=['GET', 'POST'])
+@login_required
+@is_token_valid
+def lesson_page(course_name):
+    g.course = db._DB__session.query(AvailableCourses).filter(
+        AvailableCourses.course_name == course_name).first()
+    if not g.course:
+        return redirect(url_for('course_page'))
+    res = requests.get(
+        f'{API_URL}/course-table/{course_name}', headers={"Authorization": f"Bearer {session.get('token')}"})
+    try:
+        g.lessons = res.json()
+        g.corse_name = str(course_name).capitalize()
+    except Exception as e:
+        pass
+
+    return render_template('lesson-page.html')
+
+
+@app.route('/delete-lesson/<course_name>/<lesson_id>', methods=['GET', 'DELETE'])
+@login_required
+def delete_lesson(course_name, lesson_id):
+    if current_user.role == 'user':
+        return redirect(url_for('course_page'))
+    res = requests.delete(
+        f'{API_URL}//lesson/{course_name}/{lesson_id}',
+        headers={"Authorization": f"Bearer {session.get('token')}"})
+    if res.status_code != 410:
+        g.res_error = res.json().get('msg')
+    return redirect(url_for('lesson_page', course_name=course_name))
+
+
 @app.route('/create-course', methods=['GET', 'POST'])
 @login_required
 @is_token_valid
@@ -254,7 +186,7 @@ def create_course():
             image = request.files.get('course-image')
             if image and image.filename:
                 try:
-                    data['image'] = save_image_to_db(image_file=image)[0]
+                    data['course-image'] = save_image_to_db(image_file=image)[0]
                 except Exception as e:
                     pass
         res = requests.post(f'{API_URL}/new-course',
@@ -280,7 +212,7 @@ def edit_course(course_name, course_id):
                 data['image'] = save_image_to_db(image_file=image)[0]
 
             except Exception as e:
-                    print(e)
+                pass
         res = requests.put(f'{API_URL}/available-course/{course_id}',
                            data=json.dumps(data), headers={
                                'Content-Type': 'application/json',
@@ -291,17 +223,19 @@ def edit_course(course_name, course_id):
             g.res_error = res.json().get('msg')
     return redirect(url_for('course_page'))
 
+
 @app.route('/delete-course/<course_name>', methods=['GET', 'DELETE'])
 @login_required
 @is_token_valid
 def delete_course(course_name):
     """Delete course. This drop the course table from the database"""
-    res = requests.delete(f'{API_URL}/delete-course/{course_name}', headers={'Authorization': f'Bearer {session.get("token")}'})
+    res = requests.delete(f'{API_URL}/delete-course/{course_name}',
+                          headers={'Authorization': f'Bearer {session.get("token")}'})
     g.res_status_code = res.status_code
     if res.status_code != 410:
-            g.res_error = res.json().get('msg')
+        g.res_error = res.json().get('msg')
     return redirect(url_for('course_page'))
-    
+
 
 @app.route('/new-lesson', methods=['GET', 'POST'])
 @login_required
@@ -361,8 +295,8 @@ def create_quiz():
                 except Exception as e:
                     pass
         try:
-            res = requests.post(f'{API_URL}/new-quiz', data=json.dumps(data), headers={'Content-Type': 'application/json',\
-                                                                                    'Authorization': f'Bearer {session.get("token")}'})
+            res = requests.post(f'{API_URL}/new-quiz', data=json.dumps(data), headers={'Content-Type': 'application/json',
+                                                                                       'Authorization': f'Bearer {session.get("token")}'})
             g.res_status_code = res.status_code
             if res.status_code != 201:
                 g.res_error = res.json().get('msg')
@@ -394,9 +328,9 @@ def edit_quiz(quiz_name, quiz_id):
         image = request.files.get('quiz_image')
         if image and image.filename:
             try:
-                data['quiz_image'] =save_image_to_db(image)
+                data['quiz_image'] = save_image_to_db(image)
             except Exception as e:
-                    print(e)
+                print(e)
         res = requests.put(f'{API_URL}/available-quiz/{quiz_id}',
                            data=json.dumps(data), headers={
                                'Content-Type': 'application/json',
@@ -407,17 +341,20 @@ def edit_quiz(quiz_name, quiz_id):
             g.res_error = res.json().get('msg')
     return redirect(url_for('quizzes_page'))
 
+
 @app.route('/delete-quiz/<quiz_name>', methods=['GET', 'DELETE'])
 @login_required
 @is_token_valid
 def delete_quiz(quiz_name):
     """Delete quiz. This drop the quiz table from the database"""
-    res = requests.delete(f'{API_URL}/delete-quiz/{quiz_name}', headers={'Authorization': f'Bearer {session.get("token")}'})
+    res = requests.delete(f'{API_URL}/delete-quiz/{quiz_name}',
+                          headers={'Authorization': f'Bearer {session.get("token")}'})
     g.res_status_code = res.status_code
     if res.status_code != 410:
-            g.res_error = res.json().get('msg')
+        g.res_error = res.json().get('msg')
     return redirect(url_for('quizzes_page'))
-    
+
+
 @app.route('/new-quiz', methods=['GET', 'POST'])
 @login_required
 @is_token_valid
@@ -429,8 +366,8 @@ def add_quiz():
         quiz_name = form.get('quiz_name')
         try:
             res = requests.post(f'{API_URL}/quiz/{quiz_name}',
-                            data=json.dumps(form), headers={'Content-Type': 'application/json',
-                                                            'Authorization': f'Bearer {session.get("token")}'})
+                                data=json.dumps(form), headers={'Content-Type': 'application/json',
+                                                                'Authorization': f'Bearer {session.get("token")}'})
             g.res_status_code = res.status_code
         except Exception as e:
             pass
@@ -447,7 +384,7 @@ def quiz_page(quiz_name):
         return redirect(url_for('quizzes_page'))
     try:
         res = requests.get(
-        f'{API_URL}/quiz-table/{quiz_name}', headers={"Authorization": f"Bearer {session.get('token')}"})
+            f'{API_URL}/quiz-table/{quiz_name}', headers={"Authorization": f"Bearer {session.get('token')}"})
         if res.status_code == 200:
             g.quizzes = res.json().get('quizzes')
             g.concepts = res.json().get('concepts')
@@ -459,6 +396,7 @@ def quiz_page(quiz_name):
 
     return render_template('quiz-page.html')
 
+
 @app.route('/request-password-reset', methods=['POST', 'GET'])
 def reset_request():
     '''Request password reset'''
@@ -466,7 +404,8 @@ def reset_request():
         return redirect(url_for('new_feed'))
     form = request.form
     if request.method == 'POST' and 'request-reset-btn' in form:
-        user = db._DB__session.query(User).filter(User.email == form.get('email')).first()
+        user = db._DB__session.query(User).filter(
+            User.email == form.get('email')).first()
         if user:
             g.msg = 'An email has been sent with the instructions to reset your password'
             send_reset_email(user)
@@ -484,17 +423,19 @@ def reset_token(token):
     form = request.form
     user = User.verify_reset_token(db, User, app, token)
     if user is None:
-        g.msg='That is an invalid or expired token'
+        g.msg = 'That is an invalid or expired token'
         return redirect(url_for('request_reset'))
     if request.method == 'POST' and 'reset-password-tk-btn' in form:
-        user.password = bcrypt.hashpw(str(form.get('password')).encode(), bcrypt.gensalt())
+        user.password = bcrypt.hashpw(
+            str(form.get('password')).encode(), bcrypt.gensalt())
         g.msg = 'Password has been changed successfully!'
         db.save()
         return redirect(url_for('sign_in'))
 
-    return render_template('reset_password.html',token=token)
+    return render_template('reset_password.html', token=token)
 
 
+@app.get('/')
 @app.get('/landing-page')
 def landing_page():
     if current_user.is_authenticated:
@@ -521,4 +462,4 @@ def unauthorized_user():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

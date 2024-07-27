@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-
-
+'''Api main module'''
 from api.v1.views import app_views
 from flask import Flask, make_response, jsonify, request
 from models import db
@@ -36,4 +35,4 @@ def not_found(error):
 
 if __name__ == "__main__":
     """ Main Function """
-    app.run()
+    app.run(port=5001, debug=True)

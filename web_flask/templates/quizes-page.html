@@ -26,7 +26,9 @@
           style="text-decoration: none; color: inherit"
         >
         <div class="course">
-          <img src="{{quiz.quiz_image}}" alt="course-image" loading="lazy" />
+          <img 
+          src="{%if quiz.quiz_image%} data:image/*;base64,{{quiz.quiz_image}}{%else%} ../static/images/logo.png {%endif%}"
+          alt="course-image" loading="lazy" />
           <div>
             <h4>{{quiz.quiz_name}}</h4>
             <p>{{quiz.description}}</p>

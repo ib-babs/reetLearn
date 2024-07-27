@@ -146,11 +146,11 @@ def delete_quiz(quiz_name, quiz_id):
 @app_views.delete('/delete-quiz/<quiz_name>', strict_slashes=False)
 @jwt_required()
 def drop_quiz(quiz_name):
-    if not db_exist(quiz_name.lower().replace(" ", "_")):
+    if not db_exist(quiz_name.replace(" ", "_")):
         return jsonify({"msg": "No quiz with such name!"}), 404
     available_quiz = db._DB__session.query(AvailableQuizes).\
         filter(AvailableQuizes.quiz_name == quiz_name.capitalize()).first()
-    MyQuiz = Quiz(quiz_name)
+    MyQuiz = Quiz(quiz_name.replace(' ', '_'))
     try:
         db.drop_table(MyQuiz)
         db.delete(available_quiz)

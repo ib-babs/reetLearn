@@ -2,7 +2,6 @@
 <style>
   body {
     background: var(--bg);
-    min-height: 100vh;
   }
   .header {
     position: unset;
@@ -36,7 +35,6 @@
     }
   }
 </style>
-<main>
 <div class="profile-div">
   <img 
   src="{%if g.user_info.image%} data:image/*;base64,{{g.user_info.image}}{%else%} ../static/images/logo.png {%endif%}"
@@ -45,11 +43,56 @@
   />
   <div>
     <h2>{{g.user_info.username}}</h2>
+    {% if g.user_info.bio%} 
     <p>
-      {{g.user_info.bio}}
+      {{g.user_info.bio}} 
     </p>
+    {%endif%}
     <p><span class='fi fi-{{g.user_info.country_code}}' style='margin-right: 10px'></span> {{g.user_info.country}}</p>
   </div>
 </div>
-</main>
+
+<div class="current-course-div">
+  <div
+    style="padding: 1em; display: grid; border-radius: 5px; background: white"
+  >
+  <h2 style='text-align: center'>Did you know?</h2>
+    <div style="display: flex; gap: 0.5em; padding-block: 10px">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 2em;
+        "
+      >
+        <p style="margin: 0">
+ Programming is EASY!
+        </p>
+        <i
+          class="far fa-play-circle"
+          style="color: var(--btn); font-size: 1.2em"
+        ></i>
+      </div>
+    </div>
+    <button
+      style="
+        padding-block: 10px;
+        padding-inline: 30px;
+        margin-block: 8px;
+        color: white;
+        border-radius: 5px;
+        display: flex;
+      "
+    >
+      <a
+        href="{{url_for('course_page')}}"
+        style="color: white; text-decoration: none; flex-grow: 1"
+      >
+        Browser Courses
+      </a>
+    </button>
+  </div>
+</div>
+
 {% endblock content %} {% include "footer.html" %}

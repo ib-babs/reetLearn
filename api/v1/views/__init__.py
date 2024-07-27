@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """__init__.py"""
-# from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from flask import Blueprint
 
 app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')

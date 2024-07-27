@@ -29,12 +29,10 @@ def create_course_table():
         return jsonify({"msg": "`course-name` and `description` required"}), 400
     underscore_course = str(course_name).replace(' ', '_')
     if not db_exist(underscore_course):
-        if not course_image:
-            course_image = '../static/images/logo.png'
         Course(underscore_course)
         available_course = AvailableCourses(course_name=str(course_name).strip(),
                                             description=str(description).strip(),
-                                            course_image=course_image.replace(' ', "_"))
+                                            course_image=course_image)
         try:
             db.new(available_course)
             db.save()
