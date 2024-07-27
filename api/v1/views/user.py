@@ -61,7 +61,7 @@ def login():
 
     if user and bcrypt.checkpw(str(password).encode(), user.password.encode()):
         access_token = create_access_token(
-            identity=user.to_dict(), expires_delta=timedelta(days=20))
+            identity=user.to_dict(), expires_delta=timedelta(days=4))
         return jsonify({"access_token": access_token, 'user': user.to_dict()}), 200
     return jsonify({"msg": "Email or password is incorrect!"}), 404
 

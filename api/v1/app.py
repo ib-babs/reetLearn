@@ -11,6 +11,7 @@ cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 app.register_blueprint(app_views)
 app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
 app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY')
+app.config['JWT_ALGORITHM'] = 'HS256'
 jwt = JWTManager(app)
 
 
