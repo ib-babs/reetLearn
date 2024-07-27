@@ -72,15 +72,19 @@ def sign_in():
         json_data = json.dumps({
             "email": email, "password": password
         })
-        res = requests.post(
-            f'{API_URL}/login', json_data, headers={"Content-Type": "application/json"})
-        g.res_status = res.status_code
-        if res.status_code == 200:
-            login_user(db.get(User, res.json().get('user').get('id')))
-            session['token'] = res.json().get('access_token')
-            return redirect(url_for('profile', user_id=current_user.id))
-        else:
-            g.res_error = res.json().get('msg')
+
+        try:
+            res = requests.post(
+                f'{API_URL}/login', json_data, headers={"Content-Type": "application/json"})
+            g.res_status = res.status_code
+            if res.status_code == 200:
+                login_user(db.get(User, res.json().get('user').get('id')))
+                session['token'] = res.json().get('access_token')
+                return redirect(url_for('profile', user_id=current_user.id))
+            else:
+                g.res_error = res.json().get('msg')
+        except Exception as e:
+            pass
     return render_template('sign-in.html')
 
 
