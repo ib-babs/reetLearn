@@ -3,7 +3,6 @@ from sqlalchemy import Column,  String, TEXT, VARCHAR
 from bcrypt import hashpw, gensalt
 from models.base_model import BaseModel, Base
 from models import DB
-# from web_flask.app import app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
@@ -21,8 +20,6 @@ class User(BaseModel, Base, DB, UserMixin):
     country_code = Column(String(3), default='ng', nullable=True)
     oauth_provider = Column(String(60), nullable=True)
     oauth_id = Column(String(60), nullable=True)
-    # user_progess = relationship(
-    #     'UserProgress', backref='user_progress', cascade="all, delete, delete-orphan")
 
     def __init__(self, *args, **kwargs):
         """initializes user"""
@@ -35,7 +32,7 @@ class User(BaseModel, Base, DB, UserMixin):
         super().__setattr__(name, value)
     def get_reset_token(self, app, expire_sec=1800):
             '''Get the reset token. Expires in thirty minutes'''
-            s = Serializer(app.config['SECRET_KEY'], expires_in=expire_sec)
+            s = Serializer(app.config.get('SECRET_KEY'), expires_in=expire_sec)
             return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod
