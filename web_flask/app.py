@@ -450,12 +450,10 @@ def reset_token(token):
         g.msg = 'That is an invalid or expired token'
         return redirect(url_for('request_reset'))
     if request.method == 'POST' and 'reset-password-tk-btn' in form:
-        user.password = bcrypt.hashpw(
-            str(form.get('password')).encode(), bcrypt.gensalt())
+        user.password = form.get('password')
         g.msg = 'Password has been changed successfully!'
         db.save()
         return redirect(url_for('sign_in'))
-
     return render_template('reset_password.html', token=token)
 
 
