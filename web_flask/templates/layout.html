@@ -28,16 +28,16 @@
   </head>
   <body>
     <header class="header">
-      <a href="{{url_for('landing_page')}}" style="text-decoration: none; color: black">
       <div class="nav-brand">
+        <a href="{{url_for('landing_page')}}" style="text-decoration: none; color: black; display:flex; gap: 1em">
           <img
             src="{{url_for('static', filename='images/logo.png')}}"
             alt="reet-learn-logo"
             loading="lazy"
           />
           <h1>reetlearn</h1>
+        </a>
         </div>
-      </a>
       <div class="mobile-navbar">
         <span>Menu</span> <i class="fas fa-bars" id="collapse-menu"></i>
       </div>
