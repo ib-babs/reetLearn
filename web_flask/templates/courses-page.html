@@ -30,6 +30,7 @@
             src="{%if course.course_image%} data:image/*;base64,{{course.course_image}}{%else%} ../static/images/logo.png {%endif%}" alt="course-image"
               alt="course-image"
               loading="lazy"
+              style='border-radius: 50%'
             />
             <div>
               <h4>{{course.course_name}}</h4>
