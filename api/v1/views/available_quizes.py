@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+'''Available quiz api'''
 from datetime import datetime
 from models import db, AvailableQuizes
 from api.v1.views import app_views
@@ -7,6 +8,7 @@ from flask import jsonify, request, make_response
  
 @app_views.get('/available-quizes', strict_slashes=False)
 def get_all_available_quizes():
+    '''Get all quizzes available. Empty array if none'''
     all_available_quizes = [quiz.to_dict()
                             for quiz in db.all(AvailableQuizes).values()]
     return jsonify(all_available_quizes)
@@ -23,6 +25,7 @@ def get_available_quiz(available_quiz_id):
 
 @app_views.put('/available-quiz/<available_quiz_id>', strict_slashes=False)
 def edit_available_quiz(available_quiz_id):
+    '''Edit description or image of a quiz obj gotten by id if available'''
     available_quiz = db.get(AvailableQuizes, available_quiz_id)
     if not available_quiz:
         return jsonify(msg="Unavailable"), 404
