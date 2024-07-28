@@ -83,7 +83,7 @@ def sign_in():
             g.res_status = res.status_code
             if res.status_code == 200:
                 id = res.json().get('user').get('id')
-                login_user(db.get(User, id), remember=True, duration=timedelta(days=3))
+                login_user(db.get(User, id), remember=True, duration=timedelta(days=7))
                 session['token'] = res.json().get('access_token')
                 return redirect(url_for('profile', user_id=current_user.id))
             else:
@@ -510,4 +510,4 @@ def unauthorized_user():
 
 if __name__ == '__main__':
     '''Main'''
-    app.run(debug=True)
+    app.run()
