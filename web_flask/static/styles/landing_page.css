@@ -125,19 +125,22 @@
   padding: 10px;
   background: linear-gradient(var(--bg) 30%, white 10px);
 }
-.intro button,
+.intro #get-started,
 .i-want-to-code-btn {
+  text-decoration: none;
   margin-top: 2em;
   padding-block: 10px;
-  padding-inline: 5em;
+  padding-inline: 1em;
   font-size: 1em;
   background-color: var(--btn);
   color: whitesmoke;
+  text-align: center;
+  display: block;
   border: none;
 }
 .i-want-to-code-btn {
-  display: grid;
-  margin: auto;
+  /* display: grid; */
+  /* margin: auto; */
   margin-top: 2em;
 }
 @media (320px <= width < 768px) {

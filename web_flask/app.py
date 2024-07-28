@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 '''app.py'''
+from datetime import timedelta
 from web_flask import *
 
 app = Flask(__name__)
@@ -17,9 +18,9 @@ Ignore the message if you don't request for password reset and no change will be
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587  # or 465 for SSL
 app.config['MAIL_USE_TLS'] = True  # or False for SSL
-app.config['MAIL_USERNAME'] = environ.get('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = environ.get('EMAIL_PASS')
-app.config['SECRET_KEY'] = environ.get('WEB_FLASK_SECRET_KEY')
+app.config['MAIL_USERNAME'] = environ.get('EMAIL_USER', 'khalsj@mail.com')
+app.config['MAIL_PASSWORD'] = environ.get('EMAIL_PASS', 'rwdswq12')
+app.config['SECRET_KEY'] = environ.get('WEB_FLASK_SECRET_KEY', '39qwoi918iwq398iu1298qiwu')
 login_manager = LoginManager(app)
 login_manager.init_app(app)
 
@@ -29,6 +30,7 @@ mail = Mail(app)
 
 @login_manager.user_loader
 def load_user(user_id):
+    '''load users'''
     user = db.get(User, user_id)
     if user:
         g.user_id = user.id
@@ -39,6 +41,7 @@ def load_user(user_id):
 
 @app.route("/sign-up", methods=['GET', 'POST'])
 def sign_up():
+    '''Register user'''
     if current_user.is_authenticated:
         return redirect(url_for('profile', user_id=current_user.id))
 
@@ -63,6 +66,7 @@ def sign_up():
 
 @app.route("/sign-in", methods=['GET', 'POST'])
 def sign_in():
+    '''Login user with correct credential'''
     if current_user.is_authenticated:
         return redirect(url_for('profile', user_id=current_user.id))
     if request.method == 'POST' and 'submit' in request.form:
@@ -78,7 +82,8 @@ def sign_in():
                 f'{API_URL}/login', json_data, headers={"Content-Type": "application/json"})
             g.res_status = res.status_code
             if res.status_code == 200:
-                login_user(db.get(User, res.json().get('user').get('id')))
+                id = res.json().get('user').get('id')
+                login_user(db.get(User, id), remember=True, duration=timedelta(days=3))
                 session['token'] = res.json().get('access_token')
                 return redirect(url_for('profile', user_id=current_user.id))
             else:
@@ -92,6 +97,7 @@ def sign_in():
 @login_required
 @is_token_valid
 def profile(user_id):
+    """User's profile"""
     return render_template('profile.html')
 
 
@@ -99,6 +105,7 @@ def profile(user_id):
 @login_required
 @is_token_valid
 def settings(user_id):
+    '''Settings'''
     form = request.form
     if request.method == 'POST' and 'submit-profile-btn' in request.form:
         data = {}
@@ -132,7 +139,8 @@ def settings(user_id):
                                 data=json.dumps({'current-password': form.get('current-password'),
                                                 'new-password': form.get('new-password')
                                                  }), headers={
-                                    "Content-Type": "application/json", 'Authorization': f'Bearer {session.get("token")}'})
+                                    "Content-Type": "application/json",
+                                    'Authorization': f'Bearer {session.get("token")}'})
             g.res_status_code = res.status_code
             if res.status_code == 200:
                 return render_template('profile-layout.html', user=g.user_info)
@@ -154,6 +162,7 @@ def settings(user_id):
 @login_required
 @is_token_valid
 def course_page():
+    '''Course(s) page'''
     res = requests.get(f'{API_URL}/available-courses')
     try:
         g.available_courses = res.json()
@@ -166,6 +175,7 @@ def course_page():
 @login_required
 @is_token_valid
 def lesson_page(course_name):
+    '''Lessons under each course'''
     g.course = db._DB__session.query(AvailableCourses).filter(
         AvailableCourses.course_name == course_name).first()
     if not g.course:
@@ -184,6 +194,7 @@ def lesson_page(course_name):
 @app.route('/delete-lesson/<course_name>/<lesson_id>', methods=['GET', 'DELETE'])
 @login_required
 def delete_lesson(course_name, lesson_id):
+    '''Delete lesson'''
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     res = requests.delete(
@@ -198,6 +209,7 @@ def delete_lesson(course_name, lesson_id):
 @login_required
 @is_token_valid
 def create_course():
+    '''Create new course'''
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     form = request.form
@@ -269,6 +281,7 @@ def delete_course(course_name):
 @login_required
 @is_token_valid
 def add_lesson():
+    '''Create a new lesson under a course'''
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     form = request.form
@@ -287,6 +300,7 @@ def add_lesson():
 @login_required
 @is_token_valid
 def edit_lesson(course_name, lesson_id):
+    '''Edit a lesson'''
     if current_user.role == 'user':
         return redirect(url_for('course_page'))
     g.course_name = course_name
@@ -337,6 +351,7 @@ def create_quiz():
 @login_required
 @is_token_valid
 def quizzes_page():
+    '''All quizzes page'''
     try:
         res = requests.get(f'{API_URL}/available-quizes')
         g.available_quizes = res.json()
@@ -387,6 +402,7 @@ def delete_quiz(quiz_name):
 @login_required
 @is_token_valid
 def add_quiz():
+    '''Create a new quizs'''
     if current_user.role == 'user':
         return redirect(url_for('quizzes_page'))
     form = request.form
@@ -406,6 +422,7 @@ def add_quiz():
 @login_required
 @is_token_valid
 def quiz_page(quiz_name):
+    '''Quiz question page for the quiz selected'''
     g.quiz_table = db._DB__session.query(AvailableQuizes).filter(
         AvailableQuizes.quiz_name == quiz_name).first()
     if not g.quiz_table:
@@ -464,6 +481,7 @@ def reset_token(token):
 @app.get('/')
 @app.get('/landing-page')
 def landing_page():
+    '''Welcome page'''
     if current_user.is_authenticated:
         return redirect(url_for('profile', user_id=current_user.id))
     return render_template('landing_page.html')
@@ -471,12 +489,14 @@ def landing_page():
 
 @app.errorhandler(404)
 def page_not_found(error):
+    '''404 page'''
     return render_template('404.html')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
+    '''log out'''
     session.clear()
     logout_user()
     return redirect(url_for('landing_page'))
@@ -484,8 +504,10 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_user():
+    '''On unauthorized user'''
     return redirect(url_for('sign_in'))
 
 
 if __name__ == '__main__':
-    app.run()
+    '''Main'''
+    app.run(debug=True)

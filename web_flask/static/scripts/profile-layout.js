@@ -13,13 +13,7 @@ window.addEventListener("load", () => {
       $(".sidebar").css("display", "block");
     }
   });
-  // $("#settings").click(() => {
-  //   // showHideAsideDetail(
-  //   //   "#information-detail",
-  //   //   "#password-detail",
-  //   //   "#delete-account-detail"
-  //   // );
-  // });
+
   $("#profile-modal-visibility-btn").click(() => {
     $(".profile-modal").toggle();
   });

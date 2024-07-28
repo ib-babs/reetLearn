@@ -8,7 +8,7 @@
       <p>
         Learn the latest technology with interactive, hands-on courses.
         <b><span style="color: black">It's free</span></b> <br />
-        <button id='get-started'>Get Started</button>
+        <a href="{{url_for('sign_up')}}" id='get-started'>Get Started</a>
       </p>
       <img src="../static/images/home-perfect-platform-2.svg" loading="lazy" />
     </div>
@@ -82,9 +82,9 @@
       </div>
       <div>
         <img src="../static/images/home-why-solo-5.svg" alt="" loading="lazy" />
-        <h4>Afraid of getting lost?</h4>
+        <h4>Have no money?</h4>
         <p>
-          We got you covered! Don't panic, <b> your progress is tracked!</b>
+          We got you covered! Don't panic, <b> Reetlearn is totally free!</b>
           <!-- <button class="description-btn">Become Certified</button> -->
         </p>
       </div>
@@ -137,7 +137,7 @@
         </div>
       </div>
     </div>
-    <button class="i-want-to-code-btn">I want to code</button>
+    <a href="{{url_for('sign_up')}}" class="i-want-to-code-btn">I want to code</a>
   </div>
 </section>
 {% endblock content %}

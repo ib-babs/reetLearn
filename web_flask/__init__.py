@@ -14,7 +14,7 @@ from PIL import Image
 from models import db, User
 from flask_mail import Mail, Message
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-API_URL = environ.get('API_URL')
+API_URL = environ.get('API_URL', 'http://localhost:5001/api/v1')
 
 def save_image_to_db(image_file=None):
     '''Resize image before saving it to the database'''

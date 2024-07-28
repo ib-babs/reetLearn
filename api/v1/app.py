@@ -9,8 +9,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 app.register_blueprint(app_views)
-app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
-app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY')
+app.config['SECRET_KEY'] = environ.get('SECRET_KEY', 'ureijdoksml1289qwiojklw')
+app.config['JWT_SECRET_KEY'] = environ.get('JWT_SECRET_KEY', '4389eiok1298qwoi8iu')
 app.config['JWT_ALGORITHM'] = 'HS256'
 jwt = JWTManager(app)
 
@@ -34,4 +34,4 @@ def not_found(error):
 
 if __name__ == "__main__":
     """ Main Function """
-    app.run()
+    app.run(debug=True, port=5001)
