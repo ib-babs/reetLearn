@@ -28,7 +28,9 @@
         <div class="course">
           <img 
           src="{%if quiz.quiz_image%} data:image/*;base64,{{quiz.quiz_image}}{%else%} ../static/images/logo.png {%endif%}"
-          alt="course-image" loading="lazy" />
+          alt="course-image" loading="lazy"
+          style='border-radius: 50%'
+          />
           <div>
             <h4>{{quiz.quiz_name}}</h4>
             <p>{{quiz.description}}</p>

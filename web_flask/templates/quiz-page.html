@@ -21,7 +21,9 @@
     <img     
     src="{%if g.quiz_table.quiz_image%} data:image/*;base64,{{g.quiz_table.quiz_image}}
     {%else%} ../static/images/logo.png {%endif%}"
-    alt="quiz-image" loading="lazy" />
+    alt="quiz-image" loading="lazy" 
+    style='border-radius: 50%'
+    />
     <div>
       <p style="font-size: 2em; margin-block: 0; font-weight: bold">
         {{g.quiz_table.quiz_name}}
