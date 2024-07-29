@@ -115,6 +115,7 @@ main .lesson-container {
   position: absolute;
   right: 30px;
   top: 20px;
+  z-index: 3;
   background: white;
   box-shadow: 0 0 5px 0.4px #2222;
 }
