@@ -51,7 +51,7 @@ main {
   padding-block: 20px;
 }
 .lesson-detail-paragraph {
-  white-space-collapse: collapse;
+  white-space-collapse: preserve;
   text-justify: distribute-all-lines;
 }
 .header {
