@@ -83,14 +83,6 @@ window.addEventListener("load", () => {
                   $($(quizCards)[nextQuiz]).css("display", "block");
                   nextQuiz++;
                 }
-                // if (nextQuiz > $(quizCards).length -1){
-                //   // nextQuiz = 1;
-                //   preventMultiLoading = 0;
-                //   alert('You have come to the end of the quiz!')
-                //   $(".quiz-cards").css("display", "none");
-                //   $(".lesson-div").css("display", "none");
-                //   $(".lives").text(10);
-                // }
               } else {
                 $(".wrong-div-alert").css("display", "grid");
                 setTimeout(() => {

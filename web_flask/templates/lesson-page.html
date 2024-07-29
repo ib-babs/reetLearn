@@ -31,10 +31,13 @@
       <p style="margin-bottom: 0; color: grey">{{g.course.description}}</p>
     </div>
   </div>
-{%if not g.lessons%}
+
+  {% if g.lessons%} {% for lesson in g.lessons %} 
+  
+  {%if not lesson.lesson%}
  <p><em>No lessons</em></p>
 {%endif%}
-  {% if g.lessons%} {% for lesson in g.lessons %} {%if lesson.lesson%}
+  {%if lesson.lesson%}
   <div class="lesson-container">
     {%if g.user_info.role == 'admin' %}
     <nav class="lesson-options">
