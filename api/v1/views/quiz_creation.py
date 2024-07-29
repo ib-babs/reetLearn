@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+'''Quiz api management module'''
 from datetime import datetime
 from models import Quiz, db, AvailableQuizes
 from api.v1.views import app_views, check_user_role
@@ -62,6 +62,7 @@ def get_all_quiz(quiz_name):
 @app_views.post('/quiz/<quiz_name>', strict_slashes=False)
 @jwt_required()
 def add_quiz(quiz_name):
+    '''Create a new quiz question and answers'''
     underscore_quiz = str(quiz_name).replace(' ', '_')
     if not db_exist(underscore_quiz):
         return jsonify({"msg": "No quiz with such name!"}), 404
@@ -92,7 +93,7 @@ def add_quiz(quiz_name):
 @app_views.put('/quiz/<quiz_name>/<quiz_id>', strict_slashes=False)
 @jwt_required()
 def edit_quiz(quiz_name, quiz_id):
-    check_user_role(get_jwt_identity().get('role'))
+    '''Edit a quiz'''
     if not db_exist(quiz_name):
         return jsonify({"msg": "No quiz with such name!"}), 404
 
@@ -129,6 +130,7 @@ def edit_quiz(quiz_name, quiz_id):
 @app_views.delete('/quiz/<quiz_name>/<quiz_id>', strict_slashes=False)
 @jwt_required()
 def delete_quiz(quiz_name, quiz_id):
+    '''Delete a quiz'''
     check_user_role(get_jwt_identity().get('role'))
     if not db_exist(quiz_name):
         return jsonify({"msg": "No quiz with such name!"}), 404
@@ -146,6 +148,7 @@ def delete_quiz(quiz_name, quiz_id):
 @app_views.delete('/delete-quiz/<quiz_name>', strict_slashes=False)
 @jwt_required()
 def drop_quiz(quiz_name):
+    '''Drop a quiz table'''
     if not db_exist(quiz_name.replace(" ", "_")):
         return jsonify({"msg": "No quiz with such name!"}), 404
     available_quiz = db._DB__session.query(AvailableQuizes).\

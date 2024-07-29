@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+'''Course api management module'''
 from datetime import datetime
 from models import Course, db, AvailableCourses
 from api.v1.views import app_views, check_user_role
@@ -11,6 +11,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 @app_views.get('/all_tables', strict_slashes=False)
 @jwt_required()
 def all_tables():
+    '''All tables available in the database'''
     check_user_role(get_jwt_identity().get('role'))
     inspector = reflection.Inspector.from_engine(db._DB__engine)
     return jsonify(inspector.get_table_names())
@@ -63,6 +64,7 @@ def get_all_lesson(course_name):
 @app_views.post('/add-lesson/<course_name>', strict_slashes=False)
 @jwt_required()
 def add_lesson(course_name):
+    '''Add a new lesson to the already created course table'''
     if not db_exist(course_name.replace(' ', '_')):
         return jsonify({"msg": "No course with such name!"}), 404
     data = request.get_json()
@@ -88,6 +90,7 @@ def add_lesson(course_name):
 @app_views.put('/lesson/<course_name>/<lesson_id>', strict_slashes=False)
 @jwt_required()
 def edit_lesson(course_name, lesson_id):
+    '''Edit lesson object gotten by the lesson id'''
     if not db_exist(course_name):
         return jsonify({"msg": "No Course with such name!"}), 404
     data = request.get_json()
@@ -119,6 +122,7 @@ def edit_lesson(course_name, lesson_id):
 @app_views.delete('/lesson/<course_name>/<lesson_id>', strict_slashes=False)
 @jwt_required()
 def delete_lesson(course_name, lesson_id):
+    '''Delete lesson id'''
     if not db_exist(course_name):
         return jsonify({"msg": "No Course with such name!"}), 404
     lesson = db.get(Course(course_name), lesson_id)
@@ -135,6 +139,7 @@ def delete_lesson(course_name, lesson_id):
 @app_views.delete('/delete-course/<course_name>', strict_slashes=False)
 @jwt_required()
 def drop(course_name):
+    '''Drop course table'''
     if not db_exist(course_name.replace(' ', '_')):
         return jsonify({"msg": "No table with such name!"}), 404
     available_course = db._DB__session.query(AvailableCourses).\

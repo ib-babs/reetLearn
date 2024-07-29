@@ -84,7 +84,6 @@ main .lesson-container {
   inset: 0;
   padding: 20px;
   background-color: white;
-  overflow: scroll;
 }
 
 .lesson-container {
@@ -162,7 +161,7 @@ main .lesson-container {
     background-color: white;
     height: 100%;
     padding: 20px;
-    /* overflow-y: scroll; */
+    overflow: scroll;
     margin: auto;
   }
 }

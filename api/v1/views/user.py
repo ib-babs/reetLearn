@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+'''User api management module'''
 from datetime import datetime, timedelta
 from models import db
 from models.user import User
@@ -21,6 +22,7 @@ def check_token():
             return jsonify({"msg": "Token expired"}), 401
         return jsonify({"msg": "Token valid"}), 200
     return jsonify({'msg': "Login required"}), 401
+
 
 @app_views.post('/register', strict_slashes=False)
 def register():
@@ -86,6 +88,7 @@ def get_users():
 @app_views.post('/user/<user_id>', strict_slashes=False)
 @jwt_required()
 def edit_user(user_id):
+    '''Edit a user object gotten by id'''
     data = request.get_json()
     user = db.get(User, user_id)
     if not user:
@@ -109,7 +112,7 @@ def edit_user(user_id):
             user.email = email
         if current_password and new_password:
             if bcrypt.checkpw(str(current_password).encode(), str(user.password).encode())\
-                and len(str(new_password)) > 5:
+                    and len(str(new_password)) > 5:
                 user.password = new_password
             else:
                 return jsonify({'msg': "Current password is either incorrect or \
@@ -129,13 +132,15 @@ def edit_user(user_id):
         except Exception as e:
             db.rollback_transaction()
             return jsonify({"msg": "User with this email already exist!"}), 500
-        return jsonify({'msg': f"Changes has been made to User.{user_id}",  'user_info': user.to_dict()}), 200
+        return jsonify({'msg': f"Changes has been made to User.{user_id}",
+                        'user_info': user.to_dict()}), 200
     return jsonify(msg="No user data field found"), 400
 
 
 @app_views.delete('/user/<user_id>', strict_slashes=False)
 @jwt_required()
 def delete_user(user_id):
+    '''Delete a user obj'''
     current_user = get_jwt_identity()
     if current_user.get("id") != user_id:
         return jsonify({"msg": "Unauthorized"}), 403

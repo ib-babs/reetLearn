@@ -16,6 +16,7 @@ from flask_mail import Mail, Message
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 API_URL = environ.get('API_URL', 'http://localhost:5001/api/v1')
 
+
 def save_image_to_db(image_file=None):
     '''Resize image before saving it to the database'''
     img = Image.open(BytesIO(image_file.read()))
@@ -24,8 +25,6 @@ def save_image_to_db(image_file=None):
     buffered = BytesIO()
     img.save(buffered, format=f'{image_fmt}')
     return (base64.b64encode(buffered.getvalue()).decode('utf-8'), image_fmt)
-
-
 
 
 def is_token_valid(func):

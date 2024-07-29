@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+'''Database engine class'''
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 import models
@@ -7,6 +8,7 @@ from sqlalchemy.engine import reflection
 from os import getenv
 
 def db_exist(class_name, db):
+    '''Check table existence'''
     inspector = reflection.Inspector.from_engine(db)
     if inspector.has_table(class_name.lower()):
         return True
@@ -17,6 +19,7 @@ clss = ['users', "available_courses", "available_quizes"]
 
 
 class DB:
+    '''Engine class'''
     __engine = None
     __session = None
 

@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+'''Model'''
 from sqlalchemy import Column,  String, TEXT, VARCHAR
 from bcrypt import hashpw, gensalt
 from models.base_model import BaseModel, Base
@@ -9,6 +10,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 class User(BaseModel, Base, DB, UserMixin):
+    '''User model'''
     __tablename__ = 'users'
     username = Column(String(128), nullable=False)
     email = Column(String(128), nullable=False, unique=True)
