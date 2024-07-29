@@ -20,7 +20,7 @@ def check_token():
         if current_time > exp_time:
             return jsonify({"msg": "Token expired"}), 401
         return jsonify({"msg": "Token valid"}), 200
-    return jsonify({'msg': "Login required"})
+    return jsonify({'msg': "Login required"}), 401
 
 @app_views.post('/register', strict_slashes=False)
 def register():

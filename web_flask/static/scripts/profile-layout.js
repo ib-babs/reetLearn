@@ -3,16 +3,16 @@ window.addEventListener("load", () => {
     $(".aside-detail").css("display", "none");
     $(".sidebar").css("display", "block");
   }
-  window.addEventListener("resize", () => {
-    if (window.outerWidth < 620) {
-      $(".aside-detail").css("display", "none");
-      $(".sidebar").css("display", "block");
-    }
-    if (window.outerWidth >= 620) {
-      $(".aside-detail").css("display", "block");
-      $(".sidebar").css("display", "block");
-    }
-  });
+  // window.addEventListener("resize", () => {
+  //   if (window.outerWidth < 620) {
+  //     $(".aside-detail").css("display", "none");
+  //     $(".sidebar").css("display", "block");
+  //   }
+  //   if (window.outerWidth >= 620) {
+  //     $(".aside-detail").css("display", "block");
+  //     $(".sidebar").css("display", "block");
+  //   }
+  // });
 
   $("#profile-modal-visibility-btn").click(() => {
     $(".profile-modal").toggle();

@@ -36,7 +36,7 @@ def is_token_valid(func):
         if current_user.is_authenticated:
             res = requests.get(f'{API_URL}/check_token_status',
                                headers={'Authorization': f'Bearer {session.get("token")}'})
-            if res.status_code == 401:
+            if res.status_code != 200:
                 session.clear()
                 g.user_info = None
                 g.user_id = None

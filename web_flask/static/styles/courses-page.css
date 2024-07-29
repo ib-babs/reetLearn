@@ -10,7 +10,6 @@ h4 {
   border-radius: 8px;
   box-shadow: 0 5px 2px #68636355;
   flex-grow: 1;
-  /* position: relative; */
 }
 .course-card-container .fa-ellipsis-v{
   position: absolute;

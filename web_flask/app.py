@@ -229,12 +229,15 @@ def create_course():
                     data['course-image'] = save_image_to_db(image_file=image)[0]
                 except Exception as e:
                     pass
-        res = requests.post(f'{API_URL}/new-course',
-                            data=json.dumps(data), headers={'Content-Type': 'application/json',
-                                                            'Authorization': f'Bearer {session.get("token")}'})
-        g.res_status_code = res.status_code
-        if res.status_code != 201:
-            g.res_error = res.json().get('msg')
+        try:
+            res = requests.post(f'{API_URL}/new-course',
+                                data=json.dumps(data), headers={'Content-Type': 'application/json',
+                                                                'Authorization': f'Bearer {session.get("token")}'})
+            g.res_status_code = res.status_code
+            if res.status_code != 201:
+                g.res_error = res.json().get('msg')
+        except Exception as e:
+            pass
     return render_template('create-course.html')
 
 
