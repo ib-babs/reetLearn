@@ -82,6 +82,7 @@ main .lesson-container {
 .lesson-div {
   position: fixed;
   inset: 0;
+  overflow-y: scroll;
   padding: 20px;
   background-color: white;
 }
