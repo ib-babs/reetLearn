@@ -79,7 +79,8 @@ window.addEventListener("load", () => {
                   $(quizCards).length > 1 &&
                   nextQuiz <= $(quizCards).length - 1
                 ) {
-                  $($(quizCards)[nextQuiz - 1]).css("display", "none");
+                  $(quizCards).css("display", "none");
+                  // $($(quizCards)[nextQuiz - 1]).css("display", "none");
                   $($(quizCards)[nextQuiz]).css("display", "block");
                   nextQuiz++;
                 }
