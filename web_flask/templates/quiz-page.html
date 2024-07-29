@@ -36,17 +36,6 @@
   {%endif%}
   {% if g.concepts%} {% for concept in g.concepts %}
   <div class="lesson-container">
-    {%if g.user_info.role == 'admin' %}
-    <nav class="lesson-options">
-      <a class="option-link edit-lesson-link">Edit</a>
-      <a
-        class="option-link delete-lesson-link"
-        href="url_for('delete_lesson', quiz_name=g.quiz_table.quiz_name, lesson_id=lesson.id)"
-        >Delete</a
-      >
-    </nav>
-    <i class="fa fa-ellipsis-v"></i>
-    {%endif%}
     <div class="lesson-cards" style="font-size: 1.5em; cursor: pointer">
       <div class="lesson-list">
         <i class="fa fa-far fa-question-circle" style="color: var(--btn)"></i>

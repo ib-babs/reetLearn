@@ -26,6 +26,7 @@ def check_token():
 
 @app_views.post('/register', strict_slashes=False)
 def register():
+    '''Register a new user'''
     data = request.get_json()
     if not data:
         jsonify({"msg": "Not a JSON"}), 400
