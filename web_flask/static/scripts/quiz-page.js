@@ -80,7 +80,6 @@ window.addEventListener("load", () => {
                   nextQuiz <= $(quizCards).length - 1
                 ) {
                   $(quizCards).css("display", "none");
-                  // $($(quizCards)[nextQuiz - 1]).css("display", "none");
                   $($(quizCards)[nextQuiz]).css("display", "block");
                   nextQuiz++;
                 }

@@ -65,7 +65,7 @@
   <span style="outline: 1px solid var(--btn); border-radius: 100%; outline-offset: 5px; margin-inline-start: 15px;" class="quiz-length"></span>
 </div>
     </div>
-    <input type="range" name="range" class="quiz-range" value="0">
+    <input type="range" name="range" class="quiz-range" value="0" hidden>
     {% for quiz in g.quizzes %} {% if quiz.concept == concept%}
       <div class="quiz-cards" hidden>
         <p class="quiz-question">{{quiz.question}}</p>
