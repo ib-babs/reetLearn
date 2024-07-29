@@ -52,6 +52,7 @@ main {
 }
 .lesson-detail-paragraph {
   white-space-collapse: preserve;
+  white-space: pre-wrap;
   text-justify: distribute-all-lines;
 }
 .header {
