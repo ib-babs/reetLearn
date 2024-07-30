@@ -18,9 +18,9 @@ Ignore the message if you don't request for password reset and no change will be
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587  # or 465 for SSL
 app.config['MAIL_USE_TLS'] = True  # or False for SSL
-app.config['MAIL_USERNAME'] = environ.get('EMAIL_USER', 'khalsj@mail.com')
-app.config['MAIL_PASSWORD'] = environ.get('EMAIL_PASS', 'rwdswq12')
-app.config['SECRET_KEY'] = environ.get('WEB_FLASK_SECRET_KEY', '39qwoi918iwq398iu1298qiwu')
+app.config['MAIL_USERNAME'] = environ.get('EMAIL_USER')
+app.config['MAIL_PASSWORD'] = environ.get('EMAIL_PASS')
+app.config['SECRET_KEY'] = environ.get('WEB_FLASK_SECRET_KEY')
 login_manager = LoginManager(app)
 login_manager.init_app(app)
 
