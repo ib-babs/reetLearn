@@ -146,7 +146,7 @@
 @media (320px <= width < 768px) {
   .intro img {
     width: 100%;
-    margin-left: 65px;
+    margin-left: 50px;
   }
   .intro {
     padding: 20px;
